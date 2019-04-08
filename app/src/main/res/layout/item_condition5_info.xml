@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/item_condition5_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="13dp"
+        android:text="--控制"
+        android:textColor="@color/gray_4a"
+        android:textSize="14sp" />
+
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/bac" />-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="13dp">
+
+        <TextView
+            android:id="@+id/item_condition5_name1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="阀门开度"
+            android:textColor="@color/gray_4a"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/item_condition5_content1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 %"
+            android:textColor="@color/gray_9b"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="13dp"
+        android:background="@color/bac" />
+
+    <LinearLayout
+        android:id="@+id/item_condition5_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="13dp">
+
+        <TextView
+            android:id="@+id/item_condition5_name2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="阀门设置"
+            android:textColor="@color/gray_4a"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/item_condition5_content2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 %"
+            android:textColor="@color/gray_9b"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:src="@mipmap/arrow_right_gray" />
+    </LinearLayout>
+
+</LinearLayout>

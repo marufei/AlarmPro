@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bac"
+    tools:context="com.huikezk.alarmpro.activity.TimeManagerActivity">
+    <include layout="@layout/view_title_bar"/>
+    <ListView
+        android:id="@+id/time_manager_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:id="@+id/time_manager_null"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="暂无时间表管理~"
+        android:textColor="@color/gray_4a"
+        android:textSize="15sp"
+        android:gravity="center"/>
+</LinearLayout>

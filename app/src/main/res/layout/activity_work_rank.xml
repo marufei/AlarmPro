@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bac"
+    android:orientation="vertical"
+    tools:context="com.huikezk.alarmpro.activity.WorkRankActivity">
+    <include layout="@layout/view_title_bar"/>
+
+    <ListView
+        android:id="@+id/work_rank_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@android:color/transparent"/>
+    <TextView
+        android:id="@+id/work_rank_null"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="--暂无排行--"
+        android:textColor="@color/gray_9b"
+        android:gravity="center"
+        android:textSize="14sp"/>
+
+</LinearLayout>

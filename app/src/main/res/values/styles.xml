@@ -1,0 +1,25 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- dialog动画 (加载动画)-->
+    <style name="style_dialog">
+        <item name="android:windowEnterAnimation">@anim/anim_popup_zoom_enter</item>
+        <item name="android:windowExitAnimation">@anim/anim_popup_zoom_exit</item>
+    </style>
+
+    <!--启动窗口-->
+    <style name="StartAppTheme" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+        <!--<item name="android:windowBackground">@drawable/layout_list_start_pic</item>-->
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:windowBackground">@mipmap/splash</item>
+    </style>
+
+</resources>

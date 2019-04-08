@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/item_condition1_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="--控制"
+        android:textColor="@color/gray_4a"
+        android:textSize="14sp" />
+
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/bac" />-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="13dp">
+
+        <TextView
+            android:id="@+id/item_condition1_name1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="风机状态"
+            android:textColor="@color/gray_4a"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/item_condition1_content1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="停止"
+            android:textColor="@color/gray_9b"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="10dp"
+        android:background="@color/bac" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="13dp">
+
+        <TextView
+            android:id="@+id/item_condition1_name2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="风机手自动"
+            android:textColor="@color/gray_4a"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/item_condition1_content2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="手动"
+            android:textColor="@color/gray_9b"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="10dp"
+        android:background="@color/bac" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="13dp">
+
+        <TextView
+            android:id="@+id/item_condition1_name3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="风机开关"
+            android:textColor="@color/gray_4a"
+            android:textSize="14sp" />
+
+
+        <TextView
+            android:id="@+id/item_condition1_open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开"
+            android:background="@drawable/bac_blue"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="3dp"
+            android:textColor="@color/white"
+            android:paddingBottom="3dp"/>
+
+        <TextView
+            android:id="@+id/item_condition1_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="关"
+            android:background="@drawable/bac_org"
+            android:layout_marginLeft="20dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="3dp"
+            android:textColor="@color/white"
+            android:paddingBottom="3dp"/>
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="bac">#eeeeee</color>
+
+    <color name="blue_app">#576DFB</color>
+
+    <color name="background">#f6f6f6</color>
+    <color name="gray_3">#333333</color>
+    <color name="gray_9">#999999</color>
+    <color name="white">#ffffff</color>
+    <color name="gray_e6">#E6E6E6</color>
+    <color name="transparent">#00000000</color>
+    <color name="gray_38">#383838</color>
+    <color name="gray_6">#666666</color>
+    <color name="gray_fa">#FAFAFA</color>
+    <color name="red_f6">#F65353</color>
+    <color name="gray_d3">#d3d3d3</color>
+    <color name="gray_a1">#a1a1a1</color>
+    <color name="org_f7">#F7A173</color>
+    <color name="gray_ee">#eeeeee</color>
+    <color name="green_25">#25A079</color>
+    <color name="gray_b2">#b2b2b2</color>
+    <color name="gray_91">#919191</color>
+
+    <color name="gray_4a">#4a4a4a</color>
+    <color name="blue_57">#576DFB</color>
+    <color name="blue_4e">#4E52FB</color>
+    <color name="blue_91">#91A2FC</color>
+    <color name="red_eb">#EB2424</color>
+    <color name="gray_e2">#e2e2e2</color>
+    <color name="blue_6a">#6A87FE</color>
+    <color name="gray_9b">#9b9b9b</color>
+    <color name="gray_7b">#7B7B7B</color>
+    <color name="org_dd">#DD8A13</color>
+    <color name="gray_f0">#F0F2F5</color>
+    <color name="white_da">#DAE1FB</color>
+    <color name="colorPopWindow">#660000aa</color>
+</resources>

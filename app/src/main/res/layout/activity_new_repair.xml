@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bac"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context="com.huikezk.alarmpro.activity.NewRepairActivity">
+
+    <include layout="@layout/view_title_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="left"
+            android:text="报修内容"
+            android:textColor="@color/gray_4a"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/new_repair_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/border_grayee"
+            android:gravity="start"
+            android:hint="请输入具体报修内容..."
+            android:minLines="3"
+            android:padding="8dp"
+            android:textColor="@color/gray_4a"
+            android:textColorHint="@color/gray_9b"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/new_repair_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="上传图片"
+            android:textColor="@color/gray_4a"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/vector_drawable_photo" />
+    </LinearLayout>
+
+    <com.huikezk.alarmpro.views.GridViewForScrollView
+        android:id="@+id/new_repair_gv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:numColumns="3" />
+
+    <Button
+        android:id="@+id/new_repair_commit"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/btn_bac"
+        android:text="提交"
+        android:textColor="@color/white"
+        android:textSize="14sp" />
+</LinearLayout>

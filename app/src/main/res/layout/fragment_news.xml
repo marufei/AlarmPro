@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bac">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="66dp"
+        android:text="通知"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:background="@mipmap/bj_top"
+        android:gravity="center"
+        android:paddingTop="20dp"/>
+    <ListView
+        android:id="@+id/fragment_news_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:id="@+id/news_null"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:text="暂无消息~"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:textColor="@color/gray_4a"/>
+</LinearLayout>

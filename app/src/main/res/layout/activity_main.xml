@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bac"
+    tools:context="com.huikezk.alarmpro.activity.MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_e6" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:background="@color/white">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:visibility="invisible"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/ic_round_red" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/main_rl2"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="22dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/ic_round_red"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/main_rl3"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/ic_round_red"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/ic_round_red"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/rg_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <RadioButton
+                android:id="@+id/rb0"
+                android:padding="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:button="@null"
+                android:clickable="true"
+                android:drawableTop="@drawable/mian_selector_1"
+                android:gravity="center"
+                android:text="首页"
+                android:textColor="@drawable/main_color_selector"
+                android:textSize="11sp" />
+
+
+            <RadioButton
+                android:id="@+id/rb1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:button="@null"
+                android:clickable="true"
+                android:drawablePadding="2dp"
+                android:drawableTop="@drawable/mian_selector_2"
+                android:gravity="center"
+                android:text="消息"
+                android:textColor="@drawable/main_color_selector"
+                android:textSize="11sp" />
+
+            <RadioButton
+                android:id="@+id/rb2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:button="@null"
+                android:clickable="true"
+                android:drawableTop="@drawable/mian_selector_3"
+                android:gravity="center"
+                android:text="报修"
+                android:textColor="@drawable/main_color_selector"
+                android:textSize="11sp" />
+
+            <RadioButton
+                android:id="@+id/rb3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:button="@null"
+                android:clickable="true"
+                android:drawableTop="@drawable/mian_selector_4"
+                android:gravity="center"
+                android:text="我的"
+                android:textColor="@drawable/main_color_selector"
+                android:textSize="11sp" />
+
+        </RadioGroup>
+
+
+    </RelativeLayout>
+
+    <com.huikezk.alarmpro.views.MyViewPager
+        android:id="@+id/vp_show"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_bottom"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>
