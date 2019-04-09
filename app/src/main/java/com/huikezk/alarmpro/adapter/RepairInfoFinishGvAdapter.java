@@ -63,6 +63,7 @@ public class RepairInfoFinishGvAdapter extends BaseAdapter {
         }
 //        viewHolder.item_repair_img.setImageBitmap(listData.get(i));
         Glide.with(context).load(listData.get(i)).into(viewHolder.item_repair_img);
+//        PicassoUtlis.Cornersimg(listData.get(i),viewHolder.item_repair_img, Const.CONNER_BIG);
         return view;
     }
 

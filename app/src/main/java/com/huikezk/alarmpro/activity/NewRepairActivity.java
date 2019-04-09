@@ -66,11 +66,10 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == MSG_DOWN_SUCCESS) {
-                urlList.add(MyApplication.IP+msg.obj);
+                urlList.add(MyApplication.IP.substring(0,MyApplication.IP.length()-1)+msg.obj);
             }
             if (msg.what==MSG_ALL_SUCCESS){
-                urlList.add(MyApplication.IP+msg.obj);
-                MyUtils.Loge(TAG,"urlList:"+urlList.get(0));
+                urlList.add(MyApplication.IP.substring(0,MyApplication.IP.length()-1)+msg.obj);
                 adapter.setListData((ArrayList<String>) urlList);
                 adapter.notifyDataSetChanged();
             }

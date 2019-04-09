@@ -63,10 +63,11 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == MSG_DOWN_SUCCESS) {
-                urlList.add(MyApplication.IP+msg.obj);
+
+                urlList.add(MyApplication.IP.substring(0,MyApplication.IP.length()-1)+msg.obj);
             }
             if (msg.what==MSG_ALL_SUCCESS){
-                urlList.add(MyApplication.IP+msg.obj);
+                urlList.add(MyApplication.IP.substring(0,MyApplication.IP.length()-1)+msg.obj);
                 adapter.setListData((ArrayList<String>) urlList);
                 adapter.notifyDataSetChanged();
             }
@@ -233,17 +234,12 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
             boolean isCameraImage = data.getBooleanExtra(ImageSelector.IS_CAMERA_IMAGE, false);
             for(int i=0;i<images.size();i++){
                 MyUtils.Loge(TAG,"images.size():"+images.get(i));
-//                picList.add(PictureUtil.imageToBase64(images.get(i)));
-//                picList.add(PictureUtil.compressImage(images.get(i),".png"));
                 if (i==images.size()-1) {
                     update(new File(images.get(i)),true);
                 }else {
                     update(new File(images.get(i)),false);
                 }
             }
-//            MyUtils.Loge(TAG,"picList:"+picList.toString());
-//            adapter.setListData(images);
-//            adapter.notifyDataSetChanged();
         }
     }
 
