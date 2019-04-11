@@ -152,11 +152,12 @@ public class RepairInfoActivity extends BaseActivity {
             repair_info_content_end.setText(data.getFinishRepairInfo());
         }
         if (data.getImgs() != null) {
-            List<Bitmap> list=new ArrayList<>();
+            List<String> list=new ArrayList<>();
             String imgArry = data.getImgs().substring(0, data.getImgs().length() - 1);
             imgArry = imgArry.substring(1);
             String[] imgArrays = imgArry.split(",");
             for(String str:imgArrays){
+                str=str.trim();
                 urlList.add(str);
             }
             MyUtils.Loge(TAG,"urlList:"+urlList.toString());
@@ -169,6 +170,7 @@ public class RepairInfoActivity extends BaseActivity {
             imgArry = imgArry.substring(1);
             String[] imgArrays = imgArry.split(",");
             for(String str:imgArrays){
+                str=str.trim();
                list.add(str);
             }
             adapter_finish.setListData(list);
