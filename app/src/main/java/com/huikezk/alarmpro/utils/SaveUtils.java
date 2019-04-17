@@ -156,13 +156,11 @@ public class SaveUtils {
     public static void removeManyData() {
         Map<String, String> map = (Map<String, String>) settings.getAll();
         for (Map.Entry<String, String> entry : map.entrySet()) {
-//            Log.i("获取的key：" + entry.getKey(), "获取的value:" + settings.getString(entry.getKey(), ""));
             String value = settings.getString(entry.getKey(), "");
-            if (TextUtils.isEmpty(value)) {
+            if (TextUtils.isEmpty(value)||"undefined".equals(value)||"null".equals(value)) {
                 editor.remove(entry.getKey());
                 editor.commit();
             }
-
         }
     }
 

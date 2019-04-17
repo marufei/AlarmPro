@@ -46,6 +46,7 @@ import com.huikezk.alarmpro.utils.VolleyUtils;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,6 +156,7 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener {
             if (proList.size()>0) {
                 news_null.setVisibility(View.GONE);
                 fragment_news_lv.setVisibility(View.VISIBLE);
+                Collections.sort(proList);
                 adapter.setListData(proList);
                 adapter.notifyDataSetChanged();
             }else {

@@ -16,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.huikezk.alarmpro.HttpsAddress.HttpsConts;
 import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
@@ -46,7 +47,6 @@ public class RepairInfoActivity extends BaseActivity {
     private String TAG = "RepairInfoActivity";
     private RepairInfoGvAdapter adapter_start;
     private RepairInfoFinishGvAdapter adapter_finish;
-    private List<String> urlList=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,29 +152,20 @@ public class RepairInfoActivity extends BaseActivity {
             repair_info_content_end.setText(data.getFinishRepairInfo());
         }
         if (data.getImgs() != null) {
-            List<String> list=new ArrayList<>();
-            String imgArry = data.getImgs().substring(0, data.getImgs().length() - 1);
-            imgArry = imgArry.substring(1);
-            String[] imgArrays = imgArry.split(",");
-            for(String str:imgArrays){
-                str=str.trim();
-                urlList.add(str);
+            List<String> list = new Gson().fromJson(data.getImgs(), new TypeToken<List<String>>() {
+            }.getType());
+            if (list!=null){
+                adapter_start.setListData(list);
+                adapter_start.notifyDataSetChanged();
             }
-            MyUtils.Loge(TAG,"urlList:"+urlList.toString());
-            adapter_start.setListData(urlList);
-            adapter_start.notifyDataSetChanged();
         }
         if (data.getFinishImgs() != null) {
-            List<String> list=new ArrayList<>();
-            String imgArry = data.getFinishImgs().substring(0, data.getImgs().length() - 1);
-            imgArry = imgArry.substring(1);
-            String[] imgArrays = imgArry.split(",");
-            for(String str:imgArrays){
-                str=str.trim();
-               list.add(str);
+            List<String> list = new Gson().fromJson(data.getFinishImgs(), new TypeToken<List<String>>() {
+            }.getType());
+            if (list!=null){
+                adapter_finish.setListData(list);
+                adapter_finish.notifyDataSetChanged();
             }
-            adapter_finish.setListData(list);
-            adapter_finish.notifyDataSetChanged();
         }
     }
 

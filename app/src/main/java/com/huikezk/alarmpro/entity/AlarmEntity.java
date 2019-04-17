@@ -1,6 +1,11 @@
 package com.huikezk.alarmpro.entity;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by MaRufei
@@ -10,7 +15,7 @@ import java.io.Serializable;
  * Purpose:TODO
  * update：
  */
-public class AlarmEntity implements Serializable {
+public class AlarmEntity implements Comparable<AlarmEntity>, Serializable {
 
     /**
      * info : 照明故障
@@ -23,6 +28,15 @@ public class AlarmEntity implements Serializable {
     private String deviceName;
     private String target;
     private String number;
+    private String datetime;
+
+    public String getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
+    }
 
     public String getInfo() {
         return info;
@@ -54,5 +68,24 @@ public class AlarmEntity implements Serializable {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    @Override
+    public int compareTo(@NonNull AlarmEntity o) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dt1 = null;
+        Date dt2 = null;
+        try {
+            dt1 = sdf.parse(this.getDatetime());
+            dt2 = sdf.parse(o.getDatetime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (dt1.getTime() > dt2.getTime()) {
+            return -1;
+        } else if (dt1.getTime() < dt2.getTime()) {
+            return 1;
+        }
+        return 0;
     }
 }

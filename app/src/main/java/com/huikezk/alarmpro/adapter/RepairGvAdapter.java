@@ -61,7 +61,7 @@ public class RepairGvAdapter extends BaseAdapter {
             viewHolder=(ViewHolder)view.getTag();
         }
 //        PicassoUtlis.Cornersimg(listData.get(i),viewHolder.item_repair_img, Const.CONNER_BIG);
-        Glide.with(context).load(listData.get(i)).into(viewHolder.item_repair_img);
+        Glide.with(context).load("file://"+listData.get(i)).into(viewHolder.item_repair_img);
         return view;
     }
 

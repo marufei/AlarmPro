@@ -128,8 +128,9 @@
         <activity android:name=".activity.LightInfoActivity" />
         <activity android:name=".activity.RepairFinishActivity" />
         <activity android:name=".activity.TableActivity" />
-        <activity android:name=".activity.ChangeProActivity"></activity>
-        <service android:name=".service.MyMqttService"/>
+        <activity android:name=".activity.ChangeProActivity"/>
+        <service android:name=".service.MyMqttService"
+            android:process="com.huikezk.alarmpro"/>
     </application>
 
 </manifest>

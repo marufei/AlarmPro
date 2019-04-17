@@ -68,8 +68,7 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
             }
             if (msg.what==MSG_ALL_SUCCESS){
                 urlList.add(MyApplication.IP.substring(0,MyApplication.IP.length()-1)+msg.obj);
-                adapter.setListData((ArrayList<String>) urlList);
-                adapter.notifyDataSetChanged();
+                commit();
             }
         }
     };
@@ -138,7 +137,15 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
                     MyUtils.showToast(RepairFinishActivity.this, "请先输入维修内容");
                     return;
                 }
-                commit();
+                for(int i=0;i<images.size();i++){
+                    MyUtils.Loge(TAG,"images.size():"+images.get(i));
+                    if (i==images.size()-1) {
+                        update(new File(images.get(i)),true);
+                    }else {
+                        update(new File(images.get(i)),false);
+                    }
+                }
+
                 break;
             case R.id.repair_finish_update:
                 //限数量的多选(比喻最多9张)
@@ -204,7 +211,7 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
                 }
                 map.put("finishRepairInfo", repair_finish_et_input.getText().toString().trim());
                 if (urlList.size()>0) {
-                    map.put("finishImgs", urlList.toString());
+                    map.put("finishImgs", new Gson().toJson(urlList));
                 }
                 MyUtils.Loge(TAG,"nickName:"+repairEntity.getNickName());
                 MyUtils.Loge(TAG,"userName:"+repairEntity.getUsername());
@@ -232,14 +239,9 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
              * 当为true时，图片返回的结果有且只有一张图片。
              */
             boolean isCameraImage = data.getBooleanExtra(ImageSelector.IS_CAMERA_IMAGE, false);
-            for(int i=0;i<images.size();i++){
-                MyUtils.Loge(TAG,"images.size():"+images.get(i));
-                if (i==images.size()-1) {
-                    update(new File(images.get(i)),true);
-                }else {
-                    update(new File(images.get(i)),false);
-                }
-            }
+            adapter.setListData(images);
+            adapter.notifyDataSetChanged();
+
         }
     }
 

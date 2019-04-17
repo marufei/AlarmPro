@@ -70,8 +70,9 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
             }
             if (msg.what==MSG_ALL_SUCCESS){
                 urlList.add(MyApplication.IP.substring(0,MyApplication.IP.length()-1)+msg.obj);
-                adapter.setListData((ArrayList<String>) urlList);
-                adapter.notifyDataSetChanged();
+//                adapter.setListData((ArrayList<String>) urlList);
+//                adapter.notifyDataSetChanged();
+                repair();
             }
         }
     };
@@ -111,7 +112,7 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
      */
     public void repair() {
         showLoadingAnim(this);
-        String url = MyApplication.IP + HttpsConts.REPAIR + MyApplication.PROJECT_NUM;
+        final String url = MyApplication.IP + HttpsConts.REPAIR + MyApplication.PROJECT_NUM;
         MyUtils.Loge(TAG, "URL:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -152,7 +153,7 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
                     map.put("repairInfo", new_repair_content.getText().toString().trim());
                 }
                 if (urlList.size() > 0) {
-                    map.put("imgs", urlList.toString());
+                    map.put("imgs", new Gson().toJson(urlList));
                     MyUtils.Loge(TAG, "imgs:" + urlList.toString());
                 }
                 return map;
@@ -170,7 +171,16 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
                     MyUtils.showToast(this, "请先输入具体报修内容");
                     return;
                 }
-                repair();
+                for (int i = 0; i < images.size(); i++) {
+                    MyUtils.Loge(TAG, "images.size():" + images.get(i));
+
+                    picNewList.add(PictureUtil.compressImage(images.get(i), ".png"));
+                    if (i==images.size()-1) {
+                        update(new File(images.get(i)),true);
+                    }else {
+                        update(new File(images.get(i)),false);
+                    }
+                }
                 break;
             case R.id.new_repair_update:
                 //限数量的多选(比喻最多9张)
@@ -240,16 +250,11 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
              * 当为true时，图片返回的结果有且只有一张图片。
              */
             boolean isCameraImage = data.getBooleanExtra(ImageSelector.IS_CAMERA_IMAGE, false);
-            for (int i = 0; i < images.size(); i++) {
-                MyUtils.Loge(TAG, "images.size():" + images.get(i));
-//                picList.add(PictureUtil.imageToBase64(images.get(i)));
-                picNewList.add(PictureUtil.compressImage(images.get(i), ".png"));
-                if (i==images.size()-1) {
-                    update(new File(images.get(i)),true);
-                }else {
-                    update(new File(images.get(i)),false);
-                }
-            }
+
+            adapter.setListData(images);
+            adapter.notifyDataSetChanged();
+
+
         }
     }
 

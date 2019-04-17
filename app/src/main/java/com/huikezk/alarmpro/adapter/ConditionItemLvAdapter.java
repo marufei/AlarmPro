@@ -76,14 +76,22 @@ public class ConditionItemLvAdapter extends BaseAdapter {
         MyUtils.Loge(TAG,"title:"+listData.get(i));
         viewHolder.item_condition1_title.setText(listData.get(i)+"控制");
         List<String> keyList = SaveUtils.getAllKeys();
-        for (int j = 0; j < keyList.size(); j++) {
-            if (keyList.get(j).equals(sendName+listData.get(i)+"状态")){
-                viewHolder.item_condition1_content1.setText(SaveUtils.getString(keyList.get(j)));
-            }
-            if (keyList.get(j).equals(sendName+listData.get(i)+"手自动")){
-                viewHolder.item_condition1_content2.setText(SaveUtils.getString(keyList.get(j)));
-            }
-
+//        for (int j = 0; j < keyList.size(); j++) {
+//            if (keyList.get(j).equals(sendName+listData.get(i)+"状态")){
+//                viewHolder.item_condition1_content1.setText(SaveUtils.getString(keyList.get(j)));
+//            }
+//            if (keyList.get(j).equals(sendName+listData.get(i)+"手自动")){
+//                viewHolder.item_condition1_content2.setText(SaveUtils.getString(keyList.get(j)));
+//            }
+//
+//        }
+        MyUtils.Loge(TAG,"title:"+sendName+listData.get(i)+"状态");
+        MyUtils.Loge(TAG,"title:"+sendName+listData.get(i)+"手自动");
+        if (keyList.contains(sendName+listData.get(i)+"状态")){
+            viewHolder.item_condition1_content1.setText(SaveUtils.getString(sendName+listData.get(i)+"状态"));
+        }
+        if(keyList.contains(sendName+listData.get(i)+"手自动")){
+            viewHolder.item_condition1_content2.setText(SaveUtils.getString(sendName+listData.get(i)+"手自动"));
         }
         viewHolder.item_condition1_open.setOnClickListener(new View.OnClickListener() {
             @Override
