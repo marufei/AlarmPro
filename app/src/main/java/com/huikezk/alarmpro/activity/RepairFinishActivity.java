@@ -137,13 +137,18 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
                     MyUtils.showToast(RepairFinishActivity.this, "请先输入维修内容");
                     return;
                 }
-                for(int i=0;i<images.size();i++){
-                    MyUtils.Loge(TAG,"images.size():"+images.get(i));
-                    if (i==images.size()-1) {
-                        update(new File(images.get(i)),true);
-                    }else {
-                        update(new File(images.get(i)),false);
+                showLoadingAnim(this);
+                if (images.size()>0) {
+                    for (int i = 0; i < images.size(); i++) {
+                        MyUtils.Loge(TAG, "images.size():" + images.get(i));
+                        if (i == images.size() - 1) {
+                            update(new File(images.get(i)), true);
+                        } else {
+                            update(new File(images.get(i)), false);
+                        }
                     }
+                }else {
+                    commit();
                 }
 
                 break;
@@ -164,7 +169,6 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
      * 提交维修信息
      */
     private void commit() {
-        showLoadingAnim(this);
         String url = MyApplication.IP + HttpsConts.REPAIR + MyApplication.PROJECT_NUM;
         MyUtils.Loge(TAG, "URL:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -278,6 +282,7 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
                 } catch (IOException e) {
                     e.printStackTrace();
                     MyUtils.Loge(TAG, "e:" + e.getMessage());
+                    hideLoadingAnim(RepairFinishActivity.this);
                 }
             }
         }.start();

@@ -111,7 +111,6 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
      * 报修
      */
     public void repair() {
-        showLoadingAnim(this);
         final String url = MyApplication.IP + HttpsConts.REPAIR + MyApplication.PROJECT_NUM;
         MyUtils.Loge(TAG, "URL:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -171,16 +170,21 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
                     MyUtils.showToast(this, "请先输入具体报修内容");
                     return;
                 }
-                for (int i = 0; i < images.size(); i++) {
-                    MyUtils.Loge(TAG, "images.size():" + images.get(i));
-
-                    picNewList.add(PictureUtil.compressImage(images.get(i), ".png"));
-                    if (i==images.size()-1) {
-                        update(new File(images.get(i)),true);
-                    }else {
-                        update(new File(images.get(i)),false);
+                showLoadingAnim(this);
+                if (images.size()>0){
+                    for (int i = 0; i < images.size(); i++) {
+                        MyUtils.Loge(TAG, "images.size():" + images.get(i));
+                        picNewList.add(PictureUtil.compressImage(images.get(i), ".png"));
+                        if (i==images.size()-1) {
+                            update(new File(images.get(i)),true);
+                        }else {
+                            update(new File(images.get(i)),false);
+                        }
                     }
+                }else {
+                    repair();
                 }
+
                 break;
             case R.id.new_repair_update:
                 //限数量的多选(比喻最多9张)
@@ -229,6 +233,7 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
                 } catch (IOException e) {
                     e.printStackTrace();
                     MyUtils.Loge(TAG, "e:" + e.getMessage());
+                    hideLoadingAnim(NewRepairActivity.this);
                 }
             }
         }.start();
