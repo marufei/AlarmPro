@@ -25,7 +25,9 @@ import com.umeng.message.UTrack;
 
 import org.json.JSONObject;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SplashActivity extends BaseActivity {
 
@@ -160,9 +162,18 @@ public class SplashActivity extends BaseActivity {
             MyApplication.PROJECT_SEND = "/" + data.getProjectName().get(0).getProjectName() + "/";
             MyApplication.PROJECT_NUM = data.getProjectName().get(0).getProjectNum();
             projectList = new String[data.getProjectName().size()];
+            String topics = "";
             for (int i = 0; i < data.getProjectName().size(); i++) {
                 projectList[i] = "/" + data.getProjectName().get(i).getProjectName() + "/#";
+                if (i == data.getProjectName().size() - 1) {
+                    topics = topics + "/" + data.getProjectName().get(i).getProjectName() + "/#";
+                } else {
+                    topics = topics + "/" + data.getProjectName().get(i).getProjectName() + "/#" + ",";
+                }
             }
+            MyUtils.Loge(TAG, "topics：" + topics);
+            SaveUtils.setString(KeyUtils.TOPICS, topics);
+            SaveUtils.setString(KeyUtils.MQTT_URL, data.getMqttUrl());
             MyApplication.projectList = projectList;
             MyApplication.MOUDLE = data.getProjectName().get(0).getModules();
         }
@@ -170,12 +181,7 @@ public class SplashActivity extends BaseActivity {
         MyApplication.IP = data.getIp();
         SaveUtils.setString(KeyUtils.TEL, data.getUsername());
         SaveUtils.setString(KeyUtils.PWD, data.getPassword());
-        Intent intent = new Intent(SplashActivity.this, MyMqttService.class);
-        intent.putExtra("url", data.getMqttUrl());
-        MyUtils.Loge(TAG,"andoridiD:"+MyUtils.getAndoridId(this));
-        intent.putExtra("clientId",MyUtils.getAndoridId(this));
-        intent.putExtra("topics", projectList);
-        startService(intent);
+
     }
 
 

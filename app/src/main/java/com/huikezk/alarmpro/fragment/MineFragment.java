@@ -39,6 +39,7 @@ import com.huikezk.alarmpro.activity.LoginActivity;
 import com.huikezk.alarmpro.activity.RepairHistoryActivity;
 import com.huikezk.alarmpro.activity.WorkRankActivity;
 import com.huikezk.alarmpro.entity.UploadEntity;
+import com.huikezk.alarmpro.service.MyMqttService;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.PicassoUtlis;
@@ -204,10 +205,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     if (status.equals("1")) {
                         MyUtils.Loge("lbw", "===mqtt onDestroy");
                         MQTTServiceCommand.disconnect(getActivity().getApplicationContext());
+                        getActivity().stopService(new Intent(getActivity().getApplicationContext(), MyMqttService.class));
                         SaveUtils.removeAllData();
                         MyApplication.finishAllActivity();
                         ActivityUtil.exitAll();
                         LoginActivity.start(getActivity());
+
                     } else {
                         String msg = jsonObject.getString("message");
                         ActivityUtil.toLogin(getActivity(), status, msg);

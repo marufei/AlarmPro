@@ -26,6 +26,7 @@ import com.huikezk.alarmpro.fragment.HomeFragment;
 import com.huikezk.alarmpro.fragment.MineFragment;
 import com.huikezk.alarmpro.fragment.NewsFragment;
 import com.huikezk.alarmpro.fragment.RepairFragment;
+import com.huikezk.alarmpro.service.MyMqttService;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
@@ -65,6 +66,8 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         initEvent();
         initData();
         updateUmengToken();
+        Intent intent = new Intent(this, MyMqttService.class);
+        startService(intent);
     }
 
     private void initData() {

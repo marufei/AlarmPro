@@ -8,11 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.huikezk.alarmpro.BuildConfig;
 import com.huikezk.alarmpro.R;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 
@@ -23,6 +25,7 @@ import net.igenius.mqttservice.MQTTServiceReceiver;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -40,81 +43,59 @@ public class MyMqttService extends Service {
     }
 
     ExecutorService mqttThreadExecutor;
-    Notification.Builder mBuilder;
-    NotificationManager notificationManager;
+
+
     private String notificationId = "channelId";
     private String notificationName = "channelName";
+    String CHANNEL_ONE_ID = "com.huikezk.alarmpro";
+    String CHANNEL_ONE_NAME = "Channel One";
 
     @Override
     public void onCreate() {
         super.onCreate();
-        MyUtils.Loge("lbw", "===mqtt onCreate");
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ONE_ID, CHANNEL_ONE_NAME, NotificationManager.IMPORTANCE_HIGH);
+            manager.createNotificationChannel(channel);
+            Notification notification = new Notification.Builder(this, CHANNEL_ONE_ID)
+                    .setContentTitle("智能楼宇系统")
+                    .setContentText("智能楼宇系统")
+                    .setSmallIcon(R.mipmap.logo)
+                    .build();
+            startForeground(99, notification);
+        } else {
+            startForeground(99, getNotification());
+        }
+
         mqttThreadExecutor = Executors.newSingleThreadExecutor();
 
+        if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.TOPICS))) {
+            String myTopics = SaveUtils.getString(KeyUtils.TOPICS);
+            topics = new String[myTopics.split(",").length];
+            topics = myTopics.split(",");
+            initMqtt();
+        }
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        MyUtils.Loge("lbw", "===mqtt onStartCommand");
-        String url = intent.getStringExtra("url");
-        String clientId = intent.getStringExtra("clientId");
-        String[] topics = intent.getStringArrayExtra("topics");
-        initMqtt(url, clientId, topics);
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    private void initMqtt(final String url, final String clientId, final String... topics) {
-        this.topics=topics;
+    private void initMqtt() {
+        MyUtils.Loge("lbw", "===mqtt onCreate");
+        MyUtils.Loge("lbw", SaveUtils.getString(KeyUtils.MQTT_URL));
+        MyUtils.Loge("lbw", "topics:" + SaveUtils.getString(KeyUtils.TOPICS));
+        MyUtils.Loge("lbw", MyUtils.getAndoridId(this));
 
         MQTTService.NAMESPACE = BuildConfig.APPLICATION_ID; //or BuildConfig.APPLICATION_ID;
 //        MQTTService.KEEP_ALIVE_INTERVAL = 10; //in seconds
 //        MQTTService.CONNECT_TIMEOUT = 30;
-
+        final String url = SaveUtils.getString(KeyUtils.MQTT_URL);
+        final String clientId = MyUtils.getAndoridId(this);
         mqttThreadExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 //连接订阅MQTT
-                MQTTServiceCommand.connect(getApplicationContext(), "tcp://"+url, clientId, "admin", "123456");
+                MQTTServiceCommand.connect(getApplicationContext(), "tcp://" + url, clientId, "admin", "123456");
                 receiver.register(MyMqttService.this);
             }
         });
-
-//        MQTTServiceLogger.setLogLevel(MQTTServiceLogger.LogLevel.DEBUG);
-//        MQTTServiceLogger.setLoggerDelegate(new MQTTServiceLogger.LoggerDelegate() {
-//            @Override
-//            public void error(String tag, String message) {
-//                //your own implementation here
-//                MyUtils.Loge("lbw", "===mqtt tag err:" + message);
-//            }
-//
-//            @Override
-//            public void error(String tag, String message, Throwable exception) {
-//                //your own implementation here
-//            }
-//
-//            @Override
-//            public void debug(String tag, String message) {
-//                //your own implementation here
-//                MyUtils.Loge("lbw", "===mqtt tag debug:" + message);
-//            }
-//
-//            @Override
-//            public void info(String tag, String message) {
-//                //your own implementation here
-//                MyUtils.Loge("lbw", "===mqtt tag info:" + message);
-//            }
-//        });
-
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        //创建NotificationChannel
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(notificationId, notificationName, NotificationManager.IMPORTANCE_HIGH);
-            notificationManager.createNotificationChannel(channel);
-            channel.enableLights(false);
-            channel.enableVibration(false);
-        }
-
-        startForeground(99, getNotification());
     }
 
 
@@ -146,10 +127,9 @@ public class MyMqttService extends Service {
                                      final byte[] payload) {
             // called when a new message arrives on any topic
             MyUtils.Loge("lbw", "===mqtt onMessageArrived:" + topic + " " + new String(payload));
-            SaveUtils.setString(topic,new String(payload));
+            SaveUtils.setString(topic, new String(payload));
             SaveUtils.removeManyData();
             ListenerManager.getInstance().sendBroadCast("大家能收到我的信息吗");
-            
         }
 
         @Override
@@ -183,7 +163,7 @@ public class MyMqttService extends Service {
     };
 
     private Notification getNotification() {
-        mBuilder = new Notification.Builder(MyMqttService.this);
+        Notification.Builder mBuilder = new Notification.Builder(MyMqttService.this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mBuilder.setChannelId(notificationId);
         }

@@ -2,9 +2,16 @@ package com.huikezk.alarmpro.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.LinkProperties;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +27,7 @@ import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.service.IListener;
 import com.huikezk.alarmpro.service.ListenerManager;
+import com.huikezk.alarmpro.service.MyMqttService;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.OSHelper;
 import com.huikezk.alarmpro.utils.ToolUtils;
@@ -40,12 +48,12 @@ import java.lang.reflect.Method;
  * Purpose:公共
  */
 public class BaseActivity extends AppCompatActivity implements IListener {
-     public static final String TAG = "BaseActivity";
+    public static final String TAG = "BaseActivity";
     public static TextView MENU;
 
     public boolean RightOut = true;
-     public AVLoadingIndicatorView avi;
-     public LoadingView loadingView;
+    public AVLoadingIndicatorView avi;
+    public LoadingView loadingView;
 
 
     @Override
@@ -79,7 +87,6 @@ public class BaseActivity extends AppCompatActivity implements IListener {
 
 
     }
-
 
 
     /**
@@ -285,28 +292,27 @@ public class BaseActivity extends AppCompatActivity implements IListener {
 //    }
 
 
-
     /**
      * 展示加载动画
      */
-    public void showLoadingAnim(Activity activity){
+    public void showLoadingAnim(Activity activity) {
         if (activity == null || activity.isDestroyed() || activity.isFinishing()) {
             return;
         }
-        MyUtils.Loge(TAG,"showLoadingAnim()--avi:"+avi);
-        if(loadingView!=null&&avi!=null) {
+        MyUtils.Loge(TAG, "showLoadingAnim()--avi:" + avi);
+        if (loadingView != null && avi != null) {
             loadingView.dismiss();
             loadingView.show();
             avi.show();
         }
     }
 
-    public void hideLoadingAnim(Activity activity){
+    public void hideLoadingAnim(Activity activity) {
         if (activity == null || activity.isDestroyed() || activity.isFinishing()) {
             return;
         }
-        MyUtils.Loge(TAG,"hideLoadingAnim()--avi:"+avi);
-        if(loadingView!=null&&avi!=null) {
+        MyUtils.Loge(TAG, "hideLoadingAnim()--avi:" + avi);
+        if (loadingView != null && avi != null) {
 //            avi.hide();
             loadingView.dismiss();
 
@@ -314,10 +320,9 @@ public class BaseActivity extends AppCompatActivity implements IListener {
     }
 
 
-
-    public void initLoading(){
-        loadingView=new LoadingView(this);
-        avi=loadingView.findViewById(R.id.avi);
+    public void initLoading() {
+        loadingView = new LoadingView(this);
+        avi = loadingView.findViewById(R.id.avi);
         loadingView.showDialog();
     }
 
@@ -388,14 +393,14 @@ public class BaseActivity extends AppCompatActivity implements IListener {
     /**
      * QMTT 发布消息
      */
-    public void publish( String topic,String msg) {
+    public void publish(String topic, String msg) {
         //消息策略
         int qos = 1;
         //是否保留
         boolean retained = false;
 //        MyApplication.getInstance().getMqttService().publish(msg, topic, qos, retained);
 
-        MQTTServiceCommand.publish(this,topic,msg.getBytes());
+        MQTTServiceCommand.publish(this, topic, msg.getBytes());
     }
 
     @Override
@@ -405,13 +410,84 @@ public class BaseActivity extends AppCompatActivity implements IListener {
         finishActivity(1);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        checkNetWork();
+    }
+
+    public void checkNetWork() {
+        MyUtils.Loge(TAG,"判断网络1");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (connectivityManager != null) {
+                connectivityManager.requestNetwork(new NetworkRequest.Builder().build(), new ConnectivityManager.NetworkCallback() {
+
+                    /**
+                     * 网络可用的回调
+                     * */
+                    @Override
+                    public void onAvailable(Network network) {
+                        super.onAvailable(network);
+                        MyUtils.Loge(TAG,"判断网络1");
+                        startService(new Intent(getApplicationContext(), MyMqttService.class));
+                    }
+
+                    /**
+                     * 网络丢失的回调
+                     * */
+                    @Override
+                    public void onLost(Network network) {
+                        super.onLost(network);
+                    }
+
+                    /**
+                     * 当建立网络连接时，回调连接的属性
+                     * */
+                    @Override
+                    public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
+                        super.onLinkPropertiesChanged(network, linkProperties);
+                    }
+
+                    /**
+                     *  按照官方的字面意思是，当我们的网络的某个能力发生了变化回调，那么也就是说可能会回调多次
+                     *
+                     *  之后在仔细的研究
+                     * */
+                    @Override
+                    public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
+                        super.onCapabilitiesChanged(network, networkCapabilities);
+                    }
+
+                    /**
+                     * 在网络失去连接的时候回调，但是如果是一个生硬的断开，他可能不回调
+                     * */
+                    @Override
+                    public void onLosing(Network network, int maxMsToLive) {
+                        super.onLosing(network, maxMsToLive);
+                    }
+
+                    /**
+                     * 按照官方注释的解释，是指如果在超时时间内都没有找到可用的网络时进行回调
+                     * */
+                    @Override
+                    public void onUnavailable() {
+                        super.onUnavailable();
+                    }
+
+                });
+            }
+        }
+    }
+
 
     /**
      * 收到广播回调
+     *
      * @param str
      */
     @Override
     public void notifyAllActivity(String str) {
-        MyUtils.Loge(TAG,"BaseActivity收到广播");
+        MyUtils.Loge(TAG, "BaseActivity收到广播");
     }
 }

@@ -8,8 +8,10 @@ import android.util.Log;
 import com.huikezk.alarmpro.MyApplication;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -47,7 +49,7 @@ public class SaveUtils {
      * @return
      */
     public static String getString(String key) {
-        return settings.getString(key, null);
+        return settings.getString(key, "");
     }
 
     /**
@@ -139,6 +141,26 @@ public class SaveUtils {
      */
     public static boolean getBoolean(String key) {
         return settings.getBoolean(key, false);
+    }
+
+    /**
+     * 保存Set集合
+     * @param key
+     * @param set
+     * @return
+     */
+    public static boolean setSetData(String key, Set<String> set){
+        editor.putStringSet(key,set);
+        return editor.commit();
+    }
+
+    /**
+     * 读取Set集合
+     * @param key
+     * @return
+     */
+    public static Set<String> getSetData(String key){
+        return settings.getStringSet(key, new HashSet<String>());
     }
 
     /**

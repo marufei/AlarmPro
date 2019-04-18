@@ -17,4 +17,6 @@ public class KeyUtils {
     public static String PWD = "pwd";
 
     public static String IMEI="imei";
+    public static String TOPICS="topics";
+    public static String MQTT_URL="url";
 }
