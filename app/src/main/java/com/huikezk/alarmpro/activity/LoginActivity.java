@@ -2,6 +2,7 @@ package com.huikezk.alarmpro.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,24 +13,21 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
+import com.huikezk.alarmpro.BuildConfig;
 import com.huikezk.alarmpro.HttpsAddress.HttpsConts;
 import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.entity.LoginEntity;
-import com.huikezk.alarmpro.service.MyMqttService;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
-import com.umeng.message.UTrack;
+
+import net.igenius.mqttservice.MQTTService;
+import net.igenius.mqttservice.MQTTServiceCommand;
 
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
@@ -98,10 +96,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             MyApplication.loginEntity = loginEntity;
                             //设置缓存信息
                             setSP(loginEntity.getData());
-                            //设置友盟别名
-                            if (loginEntity.getData().getProjectName() != null) {
-                                setUmengAlias(loginEntity.getData().getProjectName());
-                            }
                             MainActivity.start(LoginActivity.this);
                             finish();
                         }
@@ -125,27 +119,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     }
 
-    /**
-     * 友盟设置别名
-     *
-     * @param projectName
-     */
-    private void setUmengAlias(List<LoginEntity.DataBean.ProjectNameBean> projectName) {
-        for (int i = 0; i < projectName.size(); i++) {
-            String name = projectName.get(i).getProjectName();
-
-            for (int j = 0; j < projectName.get(i).getModules().size(); j++) {
-                MyApplication.getInstance().getmPushAgent().addAlias(projectName.get(i).getModules().get(j),
-                        name, new UTrack.ICallBack() {
-                            @Override
-                            public void onMessage(boolean b, String s) {
-                                MyUtils.Loge(TAG, "添加别名成功：s--" + s);
-                            }
-                        });
-            }
-        }
-
-    }
 
     private void setSP(LoginEntity.DataBean data) {
 
@@ -177,6 +150,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         MyApplication.IP = data.getIp();
         SaveUtils.setString(KeyUtils.TEL, data.getUsername());
         SaveUtils.setString(KeyUtils.PWD, data.getPassword());
+
+        if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.MQTT_URL))) {
+            MyUtils.Loge(TAG,"clientId："+Build.SERIAL);
+//            MQTTService.NAMESPACE = BuildConfig.APPLICATION_ID;
+            MQTTServiceCommand.connect(getApplicationContext(),
+                    "tcp://"+SaveUtils.getString(KeyUtils.MQTT_URL),
+                    Build.SERIAL,
+                    "admin",
+                    "123456");
+        }
     }
 
 }

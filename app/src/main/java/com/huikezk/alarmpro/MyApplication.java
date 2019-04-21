@@ -4,16 +4,16 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
+import android.text.TextUtils;
 
-import com.huikezk.alarmpro.HttpsAddress.HttpsConts;
 import com.huikezk.alarmpro.entity.LoginEntity;
+import com.huikezk.alarmpro.service.ListenerManager;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
-import com.umeng.commonsdk.UMConfigure;
-import com.umeng.message.IUmengRegisterCallback;
-import com.umeng.message.PushAgent;
+import com.huikezk.alarmpro.utils.SaveUtils;
 
-import org.android.agoo.mezu.MeizuRegister;
-import org.android.agoo.xiaomi.MiPushRegistar;
+import net.igenius.mqttservice.MQTTServiceCommand;
+import net.igenius.mqttservice.MQTTServiceReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +85,80 @@ public class MyApplication extends Application {
      **/
     private static List<Activity> activities;
     private static MyApplication mInstance;
-    private PushAgent mPushAgent;
+
+    /**
+     * 第一次进来订阅
+     */
+    private boolean isFirst=true;
+    public MQTTServiceReceiver receiver = new MQTTServiceReceiver() {
+        @Override
+        public void onSubscriptionSuccessful(Context context,
+                                             String requestId, String topic) {
+            // called when a message has been successfully published
+            MyUtils.Loge("lbw", "===onSubscriptionSuccessful");
+            MyUtils.Loge("lbw", "===requestId:"+requestId+"--topic:"+topic);
+
+        }
+
+        @Override
+        public void onSubscriptionError(Context context, String requestId,
+                                        String topic, Exception exception) {
+            // called when a subscription is not successful.
+            // This usually happens when the broker does not give permissions
+            // for the requested topic
+            MyUtils.Loge("lbw", "===onSubscriptionError");
+        }
+
+        @Override
+        public void onMessageArrived(Context context, String topic, byte[] payload) {
+            MyUtils.Loge("lbw", "===onMessageArrived:" + topic + " " + new String(payload));
+            SaveUtils.setString(topic, new String(payload));
+            SaveUtils.removeManyData();
+            ListenerManager.getInstance().sendBroadCast("com.huikezk.alarmpro.activity.BaseActivity");
+        }
+
+//        @Override
+//        public void onMessageArrived(Context context, String topic, String payload) {
+//            MyUtils.Loge("lbw", "===onMessageArrived:" + topic + " " + payload);
+//            SaveUtils.setString(topic, payload);
+//            SaveUtils.removeManyData();
+//            ListenerManager.getInstance().sendBroadCast("com.huikezk.alarmpro.activity.BaseActivity");
+//        }
+
+        @Override
+        public void onPublishSuccessful(Context context, String requestId, String topic) {
+            // called when a subscription is successful
+            MyUtils.Loge("lbw", "===onPublishSuccessful");
+        }
+
+
+        @Override
+        public void onConnectionSuccessful(Context context, String requestId) {
+            // called when the connection is successful
+            MyUtils.Loge("lbw", "===onConnectionSuccessful");
+
+            if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.TOPICS))) {
+                String[] topics = SaveUtils.getString(KeyUtils.TOPICS).split(",");
+                MQTTServiceCommand.subscribe(getApplicationContext(), 1,false, topics);
+//                String[] topics=new String[]{"/123/#","/456/#"};
+//                MQTTServiceCommand.subscribe(getApplicationContext(), 1, true, topics);
+//                isFirst=false;
+            }
+
+        }
+
+        @Override
+        public void onException(Context context, String requestId,
+                                Exception exception) {
+            // called when an error happens
+            MyUtils.Loge("lbw", "===onException:" + exception.getMessage());
+        }
+
+        @Override
+        public void onConnectionStatus(Context context, boolean connected) {
+
+        }
+    };
 
 
 
@@ -99,54 +172,10 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-        initPush();
+        receiver.register(getApplicationContext());
     }
 
-    public PushAgent getmPushAgent() {
-        return mPushAgent;
-    }
 
-    /**
-     * 初始化友盟
-     */
-    private void initPush() {
-        // 在此处调用基础组件包提供的初始化函数 相应信息可在应用管理 -> 应用信息 中找到 http://message.umeng.com/list/apps
-        // 参数一：当前上下文context；
-        // 参数二：应用申请的Appkey（需替换）；
-        // 参数三：渠道名称；
-        // 参数四：设备类型，必须参数，传参数为UMConfigure.DEVICE_TYPE_PHONE则表示手机；
-        // 传参数为UMConfigure.DEVICE_TYPE_BOX则表示盒子；默认为手机；
-        // 参数五：Push推送业务的secret 填充Umeng Message Secret对应信息（需替换）
-        UMConfigure.init(this, "5c7a704d0cafb2d38e00157c",
-                "Umeng", UMConfigure.DEVICE_TYPE_PHONE,
-                "7ce600fe4fb93d022bea667e86383182");
-
-        //获取消息推送代理示例
-        mPushAgent = PushAgent.getInstance(this);
-        //注册推送服务，每次调用register方法都会回调该接口
-        mPushAgent.register(new IUmengRegisterCallback() {
-
-            @Override
-            public void onSuccess(String deviceToken) {
-                //注册成功会返回deviceToken deviceToken是推送消息的唯一标志
-                MyUtils.Loge(TAG, "注册成功：deviceToken：-------->  " + deviceToken);
-                UMENG_TOKEN=deviceToken;
-            }
-
-            @Override
-            public void onFailure(String s, String s1) {
-                MyUtils.Loge(TAG, "注册失败：-------->  " + "s:" + s + ",s1:" + s1);
-            }
-        });
-
-        //小米通道
-        MiPushRegistar.register(this, HttpsConts.MIUI_APP_ID,HttpsConts.MIUI_APP_KEY);
-
-        //魅族通道
-        MeizuRegister.register(this, HttpsConts.MZ_APP_ID, HttpsConts.MZ_APP_KEY);
-
-//        mPushAgent.addAlias();
-    }
 
     public static MyApplication getInstance() {
         return mInstance;

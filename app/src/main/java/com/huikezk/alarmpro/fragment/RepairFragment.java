@@ -56,7 +56,6 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         view = View.inflate(getActivity(), R.layout.fragment_repair, null);
-        ListenerManager.getInstance().registerListtener(this);
         initViews();
         initData();
         initListener();

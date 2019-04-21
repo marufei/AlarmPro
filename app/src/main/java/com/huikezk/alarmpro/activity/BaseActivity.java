@@ -27,12 +27,10 @@ import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.service.IListener;
 import com.huikezk.alarmpro.service.ListenerManager;
-import com.huikezk.alarmpro.service.MyMqttService;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.OSHelper;
 import com.huikezk.alarmpro.utils.ToolUtils;
 import com.huikezk.alarmpro.views.LoadingView;
-import com.umeng.message.PushAgent;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import net.igenius.mqttservice.MQTTServiceCommand;
@@ -81,9 +79,6 @@ public class BaseActivity extends AppCompatActivity implements IListener {
         MyApplication.getInstance().addActivity(this);
         initLoading();
         setContentView(R.layout.view_title_bar);
-
-        //友盟推送
-        PushAgent.getInstance(this).onAppStart();
 
 
     }
@@ -430,7 +425,6 @@ public class BaseActivity extends AppCompatActivity implements IListener {
                     public void onAvailable(Network network) {
                         super.onAvailable(network);
                         MyUtils.Loge(TAG,"判断网络1");
-                        startService(new Intent(getApplicationContext(), MyMqttService.class));
                     }
 
                     /**
@@ -488,6 +482,6 @@ public class BaseActivity extends AppCompatActivity implements IListener {
      */
     @Override
     public void notifyAllActivity(String str) {
-        MyUtils.Loge(TAG, "BaseActivity收到广播");
+//        MyUtils.Loge(TAG, "BaseActivity收到广播");
     }
 }

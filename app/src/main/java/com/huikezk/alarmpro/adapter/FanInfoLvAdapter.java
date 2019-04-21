@@ -81,16 +81,18 @@ public class FanInfoLvAdapter extends BaseAdapter {
         String name_alarm = sendName + listData.get(i) + "/故障";
         viewHolder.item_fan_info_name.setText(listData.get(i));
         List<String> keyList = SaveUtils.getAllKeys();
-        for (int j = 0; j < keyList.size(); j++) {
-            if (keyList.get(j).equals(sendName + listData.get(i) + "/状态")) {
-                if (!TextUtils.isEmpty(SaveUtils.getString(keyList.get(j))) &&
-                        SaveUtils.getString(keyList.get(j)).equals("报警")) {
-                    viewHolder.item_fan_info_error.setText(SaveUtils.getString(keyList.get(j)));
-                    viewHolder.item_fan_info_error.setTextColor(context.getResources().getColor(R.color.red_f6));
-                }
-            }
-
-        }
+//        for (int j = 0; j < keyList.size(); j++) {
+//            if (keyList.get(j).equals(sendName + listData.get(i) + "/状态")) {
+//                if (!TextUtils.isEmpty(SaveUtils.getString(keyList.get(j))) &&
+//                        SaveUtils.getString(keyList.get(j)).equals("报警")) {
+//                    viewHolder.item_fan_info_error.setText(SaveUtils.getString(keyList.get(j)));
+//                    viewHolder.item_fan_info_error.setTextColor(context.getResources().getColor(R.color.red_f6));
+//                }else {
+//                    viewHolder.item_fan_info_error.setText("正常");
+//                }
+//            }
+//
+//        }
         if (keyList.contains(name_status) && !TextUtils.isEmpty(SaveUtils.getString(name_status))) {
             switch (SaveUtils.getString(name_status)) {
                 case "开":
@@ -115,6 +117,7 @@ public class FanInfoLvAdapter extends BaseAdapter {
                     break;
                 default:
                     viewHolder.item_fan_info_error.setText("正常");
+                    viewHolder.item_fan_info_error.setTextColor(context.getResources().getColor(R.color.gray_4a));
                     break;
             }
         }

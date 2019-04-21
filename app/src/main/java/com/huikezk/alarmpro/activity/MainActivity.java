@@ -2,22 +2,23 @@ package com.huikezk.alarmpro.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.huikezk.alarmpro.BuildConfig;
 import com.huikezk.alarmpro.HttpsAddress.HttpsConts;
 import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
@@ -26,12 +27,15 @@ import com.huikezk.alarmpro.fragment.HomeFragment;
 import com.huikezk.alarmpro.fragment.MineFragment;
 import com.huikezk.alarmpro.fragment.NewsFragment;
 import com.huikezk.alarmpro.fragment.RepairFragment;
-import com.huikezk.alarmpro.service.MyMqttService;
 import com.huikezk.alarmpro.utils.ActivityUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 import com.huikezk.alarmpro.views.MyViewPager;
+
+import net.igenius.mqttservice.MQTTService;
+import net.igenius.mqttservice.MQTTServiceCommand;
 
 import org.json.JSONObject;
 
@@ -65,25 +69,33 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         initView();
         initEvent();
         initData();
-        updateUmengToken();
-        Intent intent = new Intent(this, MyMqttService.class);
-        startService(intent);
+//        updateUmengToken();
+        //连接MQTT
+//        MQTTService.NAMESPACE = BuildConfig.APPLICATION_ID;
+//        if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.MQTT_URL))) {
+//            MQTTServiceCommand.connect(getApplicationContext(),
+//                    "tcp://"+SaveUtils.getString(KeyUtils.MQTT_URL),
+//                    Build.SERIAL,
+//                    "admin",
+//                    "123456");
+//        }
     }
 
     private void initData() {
         List<String> alarmList = SaveUtils.getAllEndWithKey("alarm");
         List<String> repair = SaveUtils.getAllEndWithKey("repair");
-        showPoint(alarmList,main_rl2);
-        showPoint(repair,main_rl3);
+        showPoint(alarmList, main_rl2);
+        showPoint(repair, main_rl3);
 
     }
 
     /**
      * 判断展示消息提示红点
+     *
      * @param list
      * @param view
      */
-    private void showPoint(List<String> list,View view){
+    private void showPoint(List<String> list, View view) {
         if (list != null && list.size() > 0) {
             List<String> proList = new ArrayList<>();
             for (String str : list) {
@@ -96,7 +108,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             } else {
                 view.setVisibility(View.INVISIBLE);
             }
-        }else {
+        } else {
             view.setVisibility(View.INVISIBLE);
         }
     }
@@ -188,7 +200,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         }
     }
 
-    private void updateUmengToken(){
+    private void updateUmengToken() {
         String url = HttpsConts.BASE_URL + HttpsConts.UMENG_TOKEN;
         MyUtils.Loge(TAG, "url::" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -260,5 +272,11 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         } else {
             return super.dispatchKeyEvent(event);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 }

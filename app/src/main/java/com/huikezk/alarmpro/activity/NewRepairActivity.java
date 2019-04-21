@@ -86,7 +86,6 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
         setTitle("新建报修");
         ToolBarStyle(1);
         initView();
-        ListenerManager.getInstance().registerListtener(this);
 
     }
 

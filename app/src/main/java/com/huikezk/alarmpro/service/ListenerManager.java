@@ -11,8 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Purpose:TODO
  * update：
  */
-public class ListenerManager
-{
+public class ListenerManager {
     /**
      * 单例模式
      */

@@ -1,14 +1,11 @@
 package com.huikezk.alarmpro.fragment;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,15 +36,12 @@ import com.huikezk.alarmpro.activity.LoginActivity;
 import com.huikezk.alarmpro.activity.RepairHistoryActivity;
 import com.huikezk.alarmpro.activity.WorkRankActivity;
 import com.huikezk.alarmpro.entity.UploadEntity;
-import com.huikezk.alarmpro.service.MyMqttService;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.MyUtils;
-import com.huikezk.alarmpro.utils.PicassoUtlis;
 import com.huikezk.alarmpro.utils.PictureUtil;
 import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.UploadUtil;
 import com.huikezk.alarmpro.utils.VolleyUtils;
-import com.umeng.message.UTrack;
 
 import net.igenius.mqttservice.MQTTServiceCommand;
 
@@ -57,7 +51,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -205,7 +198,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     if (status.equals("1")) {
                         MyUtils.Loge("lbw", "===mqtt onDestroy");
                         MQTTServiceCommand.disconnect(getActivity().getApplicationContext());
-                        getActivity().stopService(new Intent(getActivity().getApplicationContext(), MyMqttService.class));
+//                        getActivity().stopService(new Intent(getActivity().getApplicationContext(), MyMqttService.class));
                         SaveUtils.removeAllData();
                         MyApplication.finishAllActivity();
                         ActivityUtil.exitAll();
@@ -230,17 +223,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         VolleyUtils.getInstance(getActivity()).addToRequestQueue(stringRequest);
     }
 
-    /**
-     * 删除友盟别名
-     */
-    private void delUmengAlias() {
-        //移除别名ID
-        MyApplication.getInstance().getmPushAgent().deleteAlias("别名ID", "自定义类型", new UTrack.ICallBack() {
-            @Override
-            public void onMessage(boolean isSuccess, String message) {
-            }
-        });
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
