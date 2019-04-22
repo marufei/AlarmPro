@@ -7,7 +7,9 @@ import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
 import com.huikezk.alarmpro.entity.LoginEntity;
+import com.huikezk.alarmpro.receiver.MyMQTTReceiver;
 import com.huikezk.alarmpro.service.ListenerManager;
+import com.huikezk.alarmpro.service.MyMQTTCommand;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
@@ -90,7 +92,7 @@ public class MyApplication extends Application {
      * 第一次进来订阅
      */
     private boolean isFirst=true;
-    public MQTTServiceReceiver receiver = new MQTTServiceReceiver() {
+     MyMQTTReceiver receiver = new MyMQTTReceiver() {
         @Override
         public void onSubscriptionSuccessful(Context context,
                                              String requestId, String topic) {
@@ -139,10 +141,7 @@ public class MyApplication extends Application {
 
             if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.TOPICS))) {
                 String[] topics = SaveUtils.getString(KeyUtils.TOPICS).split(",");
-                MQTTServiceCommand.subscribe(getApplicationContext(), 1,false, topics);
-//                String[] topics=new String[]{"/123/#","/456/#"};
-//                MQTTServiceCommand.subscribe(getApplicationContext(), 1, true, topics);
-//                isFirst=false;
+                MyMQTTCommand.subscribe(getApplicationContext(), 1,false, topics);
             }
 
         }
