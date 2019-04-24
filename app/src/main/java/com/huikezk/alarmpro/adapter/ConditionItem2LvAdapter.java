@@ -68,15 +68,27 @@ public class ConditionItem2LvAdapter extends BaseAdapter {
         }
         viewHolder.item_condition2_name1.setText(listData.get(i));
         List<String> keyList = SaveUtils.getAllKeys();
-        for (int j = 0; j < keyList.size(); j++) {
-            if (keyList.get(j).equals(sendName+listData.get(i)+"状态")){
-                if (!TextUtils.isEmpty(SaveUtils.getString(keyList.get(j)))&&
-                        SaveUtils.getString(keyList.get(j)).equals("报警")) {
-                    viewHolder.item_condition2_content1.setText(SaveUtils.getString(keyList.get(j)));
-                    viewHolder.item_condition2_content1.setTextColor(context.getResources().getColor(R.color.red_f6));
-                }
+//        for (int j = 0; j < keyList.size(); j++) {
+//            if (keyList.get(j).equals(sendName+listData.get(i)+"状态")){
+//                if (!TextUtils.isEmpty(SaveUtils.getString(keyList.get(j)))&&
+//                        SaveUtils.getString(keyList.get(j)).equals("报警")) {
+//                    viewHolder.item_condition2_content1.setText(SaveUtils.getString(keyList.get(j)));
+//                    viewHolder.item_condition2_content1.setTextColor(context.getResources().getColor(R.color.red_f6));
+//                }
+//            }
+//
+//        }
+        if (keyList.contains(sendName+listData.get(i)+"状态")){
+            if (SaveUtils.getString(sendName+listData.get(i)+"状态").equals("报警")) {
+                viewHolder.item_condition2_content1.setText(SaveUtils.getString(sendName+listData.get(i)+"状态"));
+                viewHolder.item_condition2_content1.setTextColor(context.getResources().getColor(R.color.red_f6));
+            }else {
+                viewHolder.item_condition2_content1.setText("正常");
+                viewHolder.item_condition2_content1.setTextColor(context.getResources().getColor(R.color.gray_9b));
             }
-
+        }else {
+            viewHolder.item_condition2_content1.setText("正常");
+            viewHolder.item_condition2_content1.setTextColor(context.getResources().getColor(R.color.gray_9b));
         }
         return view;
     }

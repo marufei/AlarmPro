@@ -7,13 +7,12 @@ import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
 import com.huikezk.alarmpro.entity.LoginEntity;
-import com.huikezk.alarmpro.receiver.MyMQTTReceiver;
 import com.huikezk.alarmpro.service.ListenerManager;
-import com.huikezk.alarmpro.service.MyMQTTCommand;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 
+import net.igenius.mqttservice.MQTTService;
 import net.igenius.mqttservice.MQTTServiceCommand;
 import net.igenius.mqttservice.MQTTServiceReceiver;
 
@@ -92,7 +91,7 @@ public class MyApplication extends Application {
      * 第一次进来订阅
      */
     private boolean isFirst=true;
-     MyMQTTReceiver receiver = new MyMQTTReceiver() {
+     MQTTServiceReceiver receiver = new MQTTServiceReceiver() {
         @Override
         public void onSubscriptionSuccessful(Context context,
                                              String requestId, String topic) {
@@ -141,7 +140,7 @@ public class MyApplication extends Application {
 
             if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.TOPICS))) {
                 String[] topics = SaveUtils.getString(KeyUtils.TOPICS).split(",");
-                MyMQTTCommand.subscribe(getApplicationContext(), 1,false, topics);
+                MQTTServiceCommand.subscribe(getApplicationContext(), 1,false, topics);
             }
 
         }
@@ -171,6 +170,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        MQTTService.NAMESPACE="com.huikezk.alarmpro";
         receiver.register(getApplicationContext());
     }
 

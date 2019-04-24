@@ -65,11 +65,10 @@ public class ConditionItem4LvAdapter extends BaseAdapter {
         }
         viewHolder.item_condition4_name1.setText(listData.get(i));
         List<String> keyList = SaveUtils.getAllKeys();
-        for (int j = 0; j < keyList.size(); j++) {
-            if (keyList.get(j).equals(sendName+listData.get(i))){
-                viewHolder.item_condition4_content1.setText(SaveUtils.getString(keyList.get(j))+" ℃");
-            }
-
+        if (keyList.contains(sendName+listData.get(i))){
+            viewHolder.item_condition4_content1.setText(SaveUtils.getString(sendName+listData.get(i))+" ℃");
+        }else {
+            viewHolder.item_condition4_content1.setText("0 ℃");
         }
         return view;
     }

@@ -78,18 +78,38 @@ public class ConditionItem3LvAdapter extends BaseAdapter {
 
         List<String> keyList = SaveUtils.getAllKeys();
         for (int j = 0; j < keyList.size(); j++) {
-            if (keyList.get(j).equals(sendName+listData.get(i) + "/频率反馈")) {
+            if (keyList.get(j).equals(sendName + listData.get(i) + "/频率反馈")) {
                 viewHolder.item_condition3_content1.setText(SaveUtils.getString(keyList.get(j)) + " HZ");
             }
-            if (keyList.get(j).equals(sendName +listData.get(i)+ "/输出电流")) {
+            if (keyList.get(j).equals(sendName + listData.get(i) + "/输出电流")) {
                 viewHolder.item_condition3_content2.setText(SaveUtils.getString(keyList.get(j)) + " A");
             }
-            if (keyList.get(j).equals(sendName +listData.get(i)+ "/输出功率")) {
+            if (keyList.get(j).equals(sendName + listData.get(i) + "/输出功率")) {
                 viewHolder.item_condition3_content3.setText(SaveUtils.getString(keyList.get(j)) + " KW/h");
             }
-            if (keyList.get(j).equals(sendName +listData.get(i)+ "/频率给定")) {
+            if (keyList.get(j).equals(sendName + listData.get(i) + "/频率给定")) {
                 viewHolder.item_condition3_content4.setText(SaveUtils.getString(keyList.get(j)) + " HZ");
             }
+        }
+        if (keyList.contains(sendName + listData.get(i) + "/频率反馈")) {
+            viewHolder.item_condition3_content1.setText(SaveUtils.getString(sendName + listData.get(i) + "/频率反馈") + " HZ");
+        } else {
+            viewHolder.item_condition3_content1.setText("0 HZ");
+        }
+        if (keyList.contains(sendName + listData.get(i) + "/输出电流")) {
+            viewHolder.item_condition3_content2.setText(SaveUtils.getString(sendName + listData.get(i) + "/输出电流") + " A");
+        } else {
+            viewHolder.item_condition3_content2.setText("0 A");
+        }
+        if (keyList.contains(sendName + listData.get(i) + "/输出功率")) {
+            viewHolder.item_condition3_content3.setText(SaveUtils.getString(sendName + listData.get(i) + "/输出功率") + " KW/h");
+        } else {
+            viewHolder.item_condition3_content3.setText("0 KW/h");
+        }
+        if (keyList.contains(sendName + listData.get(i) + "/频率给定")) {
+            viewHolder.item_condition3_content4.setText(SaveUtils.getString(sendName + listData.get(i) + "/频率给定") + " HZ");
+        } else {
+            viewHolder.item_condition3_content4.setText("0 HZ");
         }
         viewHolder.item_condition3_ll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +126,7 @@ public class ConditionItem3LvAdapter extends BaseAdapter {
         LinearLayout item_condition3_ll;
     }
 
-    public interface OnRateListener{
+    public interface OnRateListener {
         void onRate(int position);
     }
 }

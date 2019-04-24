@@ -55,19 +55,28 @@ public class AirInfoActivity extends BaseActivity {
 
     private void setView() {
         List<String> keyList = SaveUtils.getAllKeys();
-        for (int i = 0; i < keyList.size(); i++) {
-            if (keyList.get(i).equals(sendName + "温度读值")) {
-                air_info_arg1.setText(SaveUtils.getString(keyList.get(i)) + " ℃");
-            }
-            if (keyList.get(i).equals(sendName + "湿度读值")) {
-                air_info_arg2.setText(SaveUtils.getString(keyList.get(i)) + " %");
-            }
-            if (keyList.get(i).equals(sendName + "CO2读值")) {
-                air_info_arg3.setText(SaveUtils.getString(keyList.get(i)) + " ppm");
-            }
-            if (keyList.get(i).equals(sendName + "TVOC读值")) {
-                air_info_arg4.setText(SaveUtils.getString(keyList.get(i)) + " ppm");
-            }
+        if (keyList.contains(sendName + "温度读值")){
+            air_info_arg1.setText(SaveUtils.getString(sendName + "温度读值") + " ℃");
+        }else {
+            air_info_arg1.setText("0 ℃");
+        }
+
+        if (keyList.contains(sendName + "湿度读值")){
+            air_info_arg2.setText(SaveUtils.getString(sendName + "湿度读值") + " %");
+        }else {
+            air_info_arg2.setText("0 %");
+        }
+
+        if (keyList.contains(sendName + "CO2读值")){
+            air_info_arg3.setText(SaveUtils.getString(sendName + "CO2读值") + " ppm");
+        }else {
+            air_info_arg3.setText("0 ppm");
+        }
+
+        if (keyList.contains(sendName + "TVOC读值")){
+            air_info_arg4.setText(SaveUtils.getString(sendName + "TVOC读值") + " ppm");
+        }else {
+            air_info_arg4.setText("0 ppm");
         }
     }
 

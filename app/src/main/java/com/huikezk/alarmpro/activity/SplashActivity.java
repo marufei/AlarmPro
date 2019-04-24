@@ -12,19 +12,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
-import com.huikezk.alarmpro.BuildConfig;
 import com.huikezk.alarmpro.HttpsAddress.HttpsConts;
 import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.entity.LoginEntity;
-import com.huikezk.alarmpro.service.MyMQTTCommand;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 
-import net.igenius.mqttservice.MQTTService;
 import net.igenius.mqttservice.MQTTServiceCommand;
 
 import org.json.JSONObject;
@@ -160,7 +157,7 @@ public class SplashActivity extends BaseActivity {
         if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.MQTT_URL))) {
             MyUtils.Loge(TAG,"clientId："+Build.SERIAL);
 //            MQTTService.NAMESPACE = BuildConfig.APPLICATION_ID;
-            MyMQTTCommand.connect(getApplicationContext(),
+            MQTTServiceCommand.connect(getApplicationContext(),
                     "tcp://"+SaveUtils.getString(KeyUtils.MQTT_URL),
                     Build.SERIAL,
                     "admin",

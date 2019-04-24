@@ -104,9 +104,8 @@
         <activity android:name=".activity.RepairFinishActivity" />
         <activity android:name=".activity.TableActivity" />
         <activity android:name=".activity.ChangeProActivity"/>
-        <!--<service android:name="net.igenius.mqttservice.MQTTService"/>-->
+        <service android:name="net.igenius.mqttservice.MQTTService"/>
         <service android:name=".service.MyMqttService"/>
-        <service android:name=".service.MyBackgroudService"/>
     </application>
 
 </manifest>

@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:src="@drawable/vector_drawable_fan_close"/>
+            android:src="@drawable/vector_drawable_fan_open"/>
     </RelativeLayout>
     <TextView
         android:id="@+id/item_fan_info_error"

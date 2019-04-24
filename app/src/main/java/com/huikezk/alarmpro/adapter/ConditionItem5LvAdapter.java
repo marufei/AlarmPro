@@ -73,13 +73,16 @@ public class ConditionItem5LvAdapter extends BaseAdapter {
         }
         viewHolder.item_condition5_title.setText(listData.get(i));
         List<String> keyList = SaveUtils.getAllKeys();
-        for (int j = 0; j < keyList.size(); j++) {
-            if (keyList.get(j).equals(sendName+ listData.get(i) + "开度")) {
-                viewHolder.item_condition5_content1.setText(SaveUtils.getString(keyList.get(j)) + " %");
-            }
-            if (keyList.get(j).equals(sendName+ listData.get(i) + "设置")) {
-                viewHolder.item_condition5_content2.setText(SaveUtils.getString(keyList.get(j)) + " %");
-            }
+        if (keyList.contains(sendName+ listData.get(i) + "开度")){
+            viewHolder.item_condition5_content1.setText(SaveUtils.getString(sendName+ listData.get(i) + "开度") + " %");
+        }else {
+            viewHolder.item_condition5_content1.setText("0 %");
+        }
+
+        if (keyList.contains(sendName+ listData.get(i) + "设置")){
+            viewHolder.item_condition5_content2.setText(SaveUtils.getString(sendName+ listData.get(i) + "设置") + " %");
+        }else {
+            viewHolder.item_condition5_content2.setText("0 %");
         }
         viewHolder.item_condition5_ll.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -45,50 +45,136 @@ public class PartInfoActivity extends BaseActivity {
 
     private void setView() {
         List<String> keyList = SaveUtils.getAllKeys();
-        for (int i = 0; i < keyList.size(); i++) {
-            if (keyList.get(i).equals(sendOrder + "液位控制开关状态监测-低液位")) {
-                setViewData(part_info_name1, keyList.get(i));
-            }
-            if (keyList.get(i).equals(sendOrder + "液位控制开关状态监测-高液位")) {
-                setViewData(part_info_name2, keyList.get(i));
-            }
-            if (keyList.get(i).equals(sendOrder + "液位控制开关状态监测-超高液位")) {
-                setViewData(part_info_name3, keyList.get(i));
-            }
-            if (keyList.get(i).equals(sendOrder + "污泥泵浮球状态监测-低液位")) {
-                setViewData(part_info_name4, keyList.get(i));
-            }
-            if (keyList.get(i).equals(sendOrder + "污泥泵浮球状态监测-高液位")) {
-                setViewData(part_info_name5, keyList.get(i));
-            }
-            if (keyList.get(i).equals(sendOrder + "运行状态监测-地面溢水监测")) {
-                setViewData(part_info_name6, keyList.get(i));
-            }
-            if (keyList.get(i).equals(sendOrder + "运行状态监测-设备手自动状态")) {
-                setViewData(part_info_name7, keyList.get(i));
-            }
-            if (keyList.get(i).equals(sendOrder + "运行状态监测-刮板运行状态监测")) {
-                setViewData(part_info_name8, keyList.get(i));
-            }
-            if (keyList.get(i).equals(sendOrder + "运行状态监测-提升泵1运行状态监测")) {
-                setViewData(part_info_name9, keyList.get(i));
-            }
-            if (keyList.get(i).equals(sendOrder + "运行状态监测-提升泵2运行状态监测")) {
-                setViewData(part_info_name10, keyList.get(i));
-            }
-            if (keyList.get(i).equals(sendOrder + "运行状态监测-除渣状态")) {
-                setViewData(part_info_name11, keyList.get(i));
-            }
-            if (keyList.get(i).equals(sendOrder + "运行状态监测-清洁状态")) {
-                setViewData(part_info_name12, keyList.get(i));
-            }
-            if (keyList.get(i).equals(sendOrder + "运行状态监测-气浮状态")) {
-                setViewData(part_info_name13, keyList.get(i));
-            }
-            if (keyList.get(i).equals(sendOrder + "运行状态监测-加热状态")) {
-                setViewData(part_info_name14, keyList.get(i));
-            }
+//        for (int i = 0; i < keyList.size(); i++) {
+//            if (keyList.get(i).equals(sendOrder + "液位控制开关状态监测-低液位")) {
+//                setViewData(part_info_name1, keyList.get(i));
+//            }
+//            if (keyList.get(i).equals(sendOrder + "液位控制开关状态监测-高液位")) {
+//                setViewData(part_info_name2, keyList.get(i));
+//            }
+//            if (keyList.get(i).equals(sendOrder + "液位控制开关状态监测-超高液位")) {
+//                setViewData(part_info_name3, keyList.get(i));
+//            }
+//            if (keyList.get(i).equals(sendOrder + "污泥泵浮球状态监测-低液位")) {
+//                setViewData(part_info_name4, keyList.get(i));
+//            }
+//            if (keyList.get(i).equals(sendOrder + "污泥泵浮球状态监测-高液位")) {
+//                setViewData(part_info_name5, keyList.get(i));
+//            }
+//            if (keyList.get(i).equals(sendOrder + "运行状态监测-地面溢水监测")) {
+//                setViewData(part_info_name6, keyList.get(i));
+//            }
+//            if (keyList.get(i).equals(sendOrder + "运行状态监测-设备手自动状态")) {
+//                setViewData(part_info_name7, keyList.get(i));
+//            }
+//            if (keyList.get(i).equals(sendOrder + "运行状态监测-刮板运行状态监测")) {
+//                setViewData(part_info_name8, keyList.get(i));
+//            }
+//            if (keyList.get(i).equals(sendOrder + "运行状态监测-提升泵1运行状态监测")) {
+//                setViewData(part_info_name9, keyList.get(i));
+//            }
+//            if (keyList.get(i).equals(sendOrder + "运行状态监测-提升泵2运行状态监测")) {
+//                setViewData(part_info_name10, keyList.get(i));
+//            }
+//            if (keyList.get(i).equals(sendOrder + "运行状态监测-除渣状态")) {
+//                setViewData(part_info_name11, keyList.get(i));
+//            }
+//            if (keyList.get(i).equals(sendOrder + "运行状态监测-清洁状态")) {
+//                setViewData(part_info_name12, keyList.get(i));
+//            }
+//            if (keyList.get(i).equals(sendOrder + "运行状态监测-气浮状态")) {
+//                setViewData(part_info_name13, keyList.get(i));
+//            }
+//            if (keyList.get(i).equals(sendOrder + "运行状态监测-加热状态")) {
+//                setViewData(part_info_name14, keyList.get(i));
+//            }
+//        }
+
+        if (keyList.contains(sendOrder + "液位控制开关状态监测-低液位")){
+            setViewData(part_info_name1, sendOrder + "液位控制开关状态监测-低液位");
+        }else {
+            part_info_name1.setText("正常");
+            part_info_name1.setTextColor(getResources().getColor(R.color.gray_9b));
         }
+        if (keyList.contains(sendOrder + "液位控制开关状态监测-高液位")){
+            setViewData(part_info_name2, sendOrder + "液位控制开关状态监测-高液位");
+        }else {
+            part_info_name2.setText("正常");
+            part_info_name2.setTextColor(getResources().getColor(R.color.gray_9b));
+        }
+        if (keyList.contains(sendOrder + "液位控制开关状态监测-超高液位")){
+            setViewData(part_info_name3, sendOrder + "液位控制开关状态监测-超高液位");
+        } else {
+            part_info_name3.setText("正常");
+            part_info_name3.setTextColor(getResources().getColor(R.color.gray_9b));
+        }
+        if (keyList.contains(sendOrder + "污泥泵浮球状态监测-低液位")){
+            setViewData(part_info_name4, sendOrder + "污泥泵浮球状态监测-低液位");
+        }else {
+            part_info_name4.setText("正常");
+            part_info_name4.setTextColor(getResources().getColor(R.color.gray_9b));
+        }
+        if (keyList.contains(sendOrder + "污泥泵浮球状态监测-高液位")){
+            setViewData(part_info_name5, sendOrder + "污泥泵浮球状态监测-高液位");
+        }else {
+            part_info_name5.setText("正常");
+            part_info_name5.setTextColor(getResources().getColor(R.color.gray_9b));
+        }
+        if (keyList.contains(sendOrder + "运行状态监测-地面溢水监测")){
+            setViewData(part_info_name6, sendOrder + "运行状态监测-地面溢水监测");
+        }else {
+            part_info_name6.setText("正常");
+            part_info_name6.setTextColor(getResources().getColor(R.color.gray_9b));
+        }
+        if (keyList.contains(sendOrder + "运行状态监测-设备手自动状态")){
+            setViewData(part_info_name7, sendOrder + "运行状态监测-设备手自动状态");
+        }else {
+            part_info_name7.setText("正常");
+            part_info_name7.setTextColor(getResources().getColor(R.color.gray_9b));
+        }
+        if (keyList.contains(sendOrder + "运行状态监测-刮板运行状态监测")){
+            setViewData(part_info_name8, sendOrder + "运行状态监测-刮板运行状态监测");
+        }else {
+            part_info_name8.setText("正常");
+            part_info_name8.setTextColor(getResources().getColor(R.color.gray_9b));
+        }
+        if (keyList.contains(sendOrder + "运行状态监测-提升泵1运行状态监测")){
+            setViewData(part_info_name9, sendOrder + "运行状态监测-提升泵1运行状态监测");
+        }else {
+            part_info_name9.setText("正常");
+            part_info_name9.setTextColor(getResources().getColor(R.color.gray_9b));
+        }
+        if (keyList.contains(sendOrder + "运行状态监测-提升泵2运行状态监测")){
+            setViewData(part_info_name10, sendOrder + "运行状态监测-提升泵2运行状态监测");
+        }else {
+            part_info_name10.setText("正常");
+            part_info_name10.setTextColor(getResources().getColor(R.color.gray_9b));
+        }
+        if (keyList.contains(sendOrder + "运行状态监测-除渣状态")){
+            setViewData(part_info_name11, sendOrder + "运行状态监测-除渣状态");
+        }else {
+            part_info_name11.setText("正常");
+            part_info_name11.setTextColor(getResources().getColor(R.color.gray_9b));
+        }
+        if (keyList.contains(sendOrder + "运行状态监测-清洁状态")){
+            setViewData(part_info_name12, sendOrder + "运行状态监测-清洁状态");
+        }else {
+            part_info_name12.setText("正常");
+            part_info_name12.setTextColor(getResources().getColor(R.color.gray_9b));
+        }
+        if (keyList.contains(sendOrder + "运行状态监测-气浮状态")){
+            setViewData(part_info_name13, sendOrder + "运行状态监测-气浮状态");
+        }else {
+            part_info_name13.setText("正常");
+            part_info_name13.setTextColor(getResources().getColor(R.color.gray_9b));
+        }
+        if (keyList.contains(sendOrder + "运行状态监测-加热状态")){
+            setViewData(part_info_name14, sendOrder + "运行状态监测-加热状态");
+        }else {
+            part_info_name14.setText("正常");
+            part_info_name14.setTextColor(getResources().getColor(R.color.gray_9b));
+        }
+
     }
 
     private void initView() {
@@ -128,6 +214,9 @@ public class PartInfoActivity extends BaseActivity {
             }
             view.setText(SaveUtils.getString(content));
 
+        }else {
+            view.setTextColor(getResources().getColor(R.color.gray_9b));
+            view.setText("正常");
         }
 
     }

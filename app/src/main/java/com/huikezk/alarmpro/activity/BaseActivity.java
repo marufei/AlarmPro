@@ -393,7 +393,6 @@ public class BaseActivity extends AppCompatActivity implements IListener {
         int qos = 1;
         //是否保留
         boolean retained = false;
-//        MyApplication.getInstance().getMqttService().publish(msg, topic, qos, retained);
 
         MQTTServiceCommand.publish(this, topic, msg.getBytes());
     }
