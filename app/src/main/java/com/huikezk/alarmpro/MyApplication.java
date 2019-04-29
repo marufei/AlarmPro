@@ -2,10 +2,18 @@ package com.huikezk.alarmpro;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.alibaba.sdk.android.push.CloudPushService;
+import com.alibaba.sdk.android.push.CommonCallback;
+import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.huikezk.alarmpro.entity.LoginEntity;
 import com.huikezk.alarmpro.service.ListenerManager;
 import com.huikezk.alarmpro.utils.KeyUtils;
@@ -31,14 +39,14 @@ public class MyApplication extends Application {
     /**
      * 友盟token
      */
-    public static  String UMENG_TOKEN ;
-    public static String PIC_URL="";
+    public static String UMENG_TOKEN;
+    public static String PIC_URL = "";
     private String TAG = "MyApplication";
 
     /**
      * userId
      */
-    public static String USER_ID="";
+    public static String USER_ID = "";
 
     /**
      * 工程号
@@ -48,19 +56,19 @@ public class MyApplication extends Application {
     /**
      * 用户昵称
      */
-    public static String NICK_NAME="";
+    public static String NICK_NAME = "";
 
     /**
      * 用户名
      */
-    public static String USER_NAME="";
+    public static String USER_NAME = "";
 
     /**
      * 选中的项目名
      */
-    public static String PROJECT_NAME="";
+    public static String PROJECT_NAME = "";
 
-    public static String PROJECT_SEND="";
+    public static String PROJECT_SEND = "";
 
     public static LoginEntity loginEntity;
 
@@ -83,7 +91,6 @@ public class MyApplication extends Application {
     public static int flag = -1;
 
 
-
     /**
      * 打开的activity
      **/
@@ -93,14 +100,14 @@ public class MyApplication extends Application {
     /**
      * 第一次进来订阅
      */
-    private boolean isFirst=true;
-     MQTTServiceReceiver receiver = new MQTTServiceReceiver() {
+    private boolean isFirst = true;
+    MQTTServiceReceiver receiver = new MQTTServiceReceiver() {
         @Override
         public void onSubscriptionSuccessful(Context context,
                                              String requestId, String topic) {
             // called when a message has been successfully published
             MyUtils.Loge("lbw", "===onSubscriptionSuccessful");
-            MyUtils.Loge("lbw", "===requestId:"+requestId+"--topic:"+topic);
+            MyUtils.Loge("lbw", "===requestId:" + requestId + "--topic:" + topic);
 
         }
 
@@ -143,7 +150,7 @@ public class MyApplication extends Application {
 
             if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.TOPICS))) {
                 String[] topics = SaveUtils.getString(KeyUtils.TOPICS).split(",");
-                MQTTServiceCommand.subscribe(getApplicationContext(), 1,false, topics);
+                MQTTServiceCommand.subscribe(getApplicationContext(), 1, false, topics);
             }
 
         }
@@ -162,7 +169,6 @@ public class MyApplication extends Application {
     };
 
 
-
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -173,8 +179,59 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-        MQTTService.NAMESPACE="com.huikezk.alarmpro";
+        MQTTService.NAMESPACE = "com.huikezk.alarmpro";
         receiver.register(getApplicationContext());
+        NotificationChannel();
+        initCloudChannel(this);
+    }
+
+    /**
+     * 初始化云推送通道
+     *
+     * @param applicationContext
+     */
+    private void initCloudChannel(Context applicationContext) {
+        PushServiceFactory.init(applicationContext);
+        final CloudPushService pushService = PushServiceFactory.getCloudPushService();
+        pushService.register(applicationContext, new CommonCallback() {
+            @Override
+            public void onSuccess(String response) {
+                MyUtils.Loge(TAG, "init cloudchannel success");
+                pushService.getDeviceId();
+            }
+
+            @Override
+            public void onFailed(String errorCode, String errorMessage) {
+                MyUtils.Loge(TAG, "init cloudchannel failed -- errorcode:" + errorCode + " -- errorMessage:" + errorMessage);
+            }
+        });
+    }
+
+    /**
+     *  注册NotificationChannel
+     */
+    private void NotificationChannel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            // 通知渠道的id
+            String id = "1";
+            // 用户可以看到的通知渠道的名字.
+            CharSequence name = "notification channel";
+            // 用户可以看到的通知渠道的描述
+            String description = "notification description";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = new NotificationChannel(id, name, importance);
+            // 配置通知渠道的属性
+            mChannel.setDescription(description);
+            // 设置通知出现时的闪灯（如果 android 设备支持的话）
+            mChannel.enableLights(true);
+            mChannel.setLightColor(Color.RED);
+            // 设置通知出现时的震动（如果 android 设备支持的话）
+            mChannel.enableVibration(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            //最后在notificationmanager中创建该通知渠道
+            mNotificationManager.createNotificationChannel(mChannel);
+        }
     }
 
 

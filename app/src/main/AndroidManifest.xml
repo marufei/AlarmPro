@@ -14,15 +14,14 @@
     <!--前台服务权限-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <!--WiFi权限-->
-    <uses-permission android:name = "android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name = "android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name = "android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
-
 
 
     <application
@@ -84,6 +83,29 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <!--阿里推送-->
+        <meta-data
+            android:name="com.alibaba.app.appkey"
+            android:value="26018199" /> <!-- 请填写你自己的- appKey -->
+        <meta-data
+            android:name="com.alibaba.app.appsecret"
+            android:value="cb7659e75080dcc0523b7a293e20a970" /> <!-- 请填写你自己的appSecret -->
+
+        <!-- 消息接收监听器 （用户可自主扩展） -->
+        <receiver
+            android:name=".receiver.MyMessageReceiver"
+            android:exported="false"> <!-- 为保证receiver安全，建议设置不可导出，如需对其他应用开放可通过android：permission进行限制 -->
+            <intent-filter>
+                <action android:name="com.alibaba.push2.action.NOTIFICATION_OPENED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.alibaba.push2.action.NOTIFICATION_REMOVED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.alibaba.sdk.android.push.RECEIVE" />
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".activity.TimeManagerActivity" />
         <activity android:name=".activity.TimeInfoActivity" />
         <activity android:name=".activity.AlarmActivity" />
@@ -103,9 +125,10 @@
         <activity android:name=".activity.LightInfoActivity" />
         <activity android:name=".activity.RepairFinishActivity" />
         <activity android:name=".activity.TableActivity" />
-        <activity android:name=".activity.ChangeProActivity"/>
-        <service android:name="net.igenius.mqttservice.MQTTService"/>
-        <service android:name=".service.MyMqttService"/>
+        <activity android:name=".activity.ChangeProActivity" />
+
+        <service android:name="net.igenius.mqttservice.MQTTService" />
+
     </application>
 
 </manifest>

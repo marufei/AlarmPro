@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 26
     defaultConfig {
@@ -10,6 +9,11 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true //表示可以进行分包, 用于启用MultiDex
+
+        ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi', 'x86'
+        }
 
     }
 
@@ -68,5 +72,8 @@ dependencies {
 
     //轮播图  https://github.com/youth5201314/banner
     compile 'com.youth.banner:banner:1.4.10'
+
+    //阿里云推送
+    compile 'com.aliyun.ams:alicloud-android-push:3.1.4'
 
 }

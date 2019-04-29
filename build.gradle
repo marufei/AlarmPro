@@ -5,8 +5,6 @@ buildscript {
     repositories {
         google()
         jcenter()
-        //友盟
-        maven { url 'https://dl.bintray.com/umsdk/release' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
@@ -20,9 +18,10 @@ allprojects {
     repositories {
         google()
         jcenter()
-        //友盟
-        mavenCentral()
-        maven { url 'https://dl.bintray.com/umsdk/release' }
+        //阿里云推送
+        maven {
+            url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
+        }
         //图片上传器
         maven { url 'https://jitpack.io' }
     }
