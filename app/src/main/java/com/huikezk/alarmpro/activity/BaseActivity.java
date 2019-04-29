@@ -38,6 +38,8 @@ import net.igenius.mqttservice.MQTTServiceCommand;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import static com.huikezk.alarmpro.MyApplication.AppExit;
+
 /**
  * Created by MaRufei
  * on 2018/05/28.
@@ -77,10 +79,20 @@ public class BaseActivity extends AppCompatActivity implements IListener {
 
         //添加Activity到堆栈
         MyApplication.getInstance().addActivity(this);
-        initLoading();
+
         setContentView(R.layout.view_title_bar);
+        if (MyApplication.flag == -1) {//flag为-1说明程序被杀掉
+            protectApp();
+        }
 
+        initLoading();
 
+    }
+
+    protected void protectApp(){
+        AppExit();
+        Intent intent = new Intent(this, SplashActivity.class);
+        startActivity(intent);
     }
 
 

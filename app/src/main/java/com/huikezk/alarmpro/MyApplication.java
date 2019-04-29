@@ -79,6 +79,9 @@ public class MyApplication extends Application {
      */
     public static List<String> MOUDLE;
 
+    //判断APP是否被回收
+    public static int flag = -1;
+
 
 
     /**

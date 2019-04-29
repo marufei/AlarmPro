@@ -69,6 +69,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void initData() {
+        MyApplication.flag = 0;
         if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.TEL)) &&
                 !TextUtils.isEmpty(SaveUtils.getString(KeyUtils.PWD))) {
             login();
