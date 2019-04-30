@@ -74,6 +74,7 @@ public class BaseActivity extends AppCompatActivity implements IListener {
             window.setStatusBarColor(Color.TRANSPARENT);
             //透明导航栏
 //            window.setNavigationBarColor(Color.TRANSPARENT);
+            initMyReceiver();
 
         }
 
@@ -81,12 +82,15 @@ public class BaseActivity extends AppCompatActivity implements IListener {
         MyApplication.getInstance().addActivity(this);
 
         setContentView(R.layout.view_title_bar);
-        if (MyApplication.flag == -1) {//flag为-1说明程序被杀掉
-            protectApp();
-        }
+//        if (MyApplication.flag == -1) {//flag为-1说明程序被杀掉
+//            protectApp();
+//        }
 
         initLoading();
 
+    }
+
+    private void initMyReceiver() {
     }
 
     protected void protectApp(){

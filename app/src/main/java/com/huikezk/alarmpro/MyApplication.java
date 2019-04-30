@@ -14,6 +14,10 @@ import android.util.Log;
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
+import com.alibaba.sdk.android.push.register.GcmRegister;
+import com.alibaba.sdk.android.push.register.HuaWeiRegister;
+import com.alibaba.sdk.android.push.register.MiPushRegister;
+import com.alibaba.sdk.android.push.register.OppoRegister;
 import com.huikezk.alarmpro.entity.LoginEntity;
 import com.huikezk.alarmpro.service.ListenerManager;
 import com.huikezk.alarmpro.utils.KeyUtils;
@@ -88,7 +92,7 @@ public class MyApplication extends Application {
     public static List<String> MOUDLE;
 
     //判断APP是否被回收
-    public static int flag = -1;
+//    public static int flag = -1;
 
 
     /**
@@ -127,14 +131,6 @@ public class MyApplication extends Application {
             SaveUtils.removeManyData();
             ListenerManager.getInstance().sendBroadCast("com.huikezk.alarmpro.activity.BaseActivity");
         }
-
-//        @Override
-//        public void onMessageArrived(Context context, String topic, String payload) {
-//            MyUtils.Loge("lbw", "===onMessageArrived:" + topic + " " + payload);
-//            SaveUtils.setString(topic, payload);
-//            SaveUtils.removeManyData();
-//            ListenerManager.getInstance().sendBroadCast("com.huikezk.alarmpro.activity.BaseActivity");
-//        }
 
         @Override
         public void onPublishSuccessful(Context context, String requestId, String topic) {
@@ -180,9 +176,9 @@ public class MyApplication extends Application {
         super.onCreate();
         mInstance = this;
         MQTTService.NAMESPACE = "com.huikezk.alarmpro";
-        receiver.register(getApplicationContext());
         NotificationChannel();
         initCloudChannel(this);
+        receiver.register(getApplicationContext());
     }
 
     /**
@@ -205,6 +201,15 @@ public class MyApplication extends Application {
                 MyUtils.Loge(TAG, "init cloudchannel failed -- errorcode:" + errorCode + " -- errorMessage:" + errorMessage);
             }
         });
+
+        // 注册方法会自动判断是否支持小米系统推送，如不支持会跳过注册。
+        MiPushRegister.register(applicationContext, "2882303761517956329", "5811795650329");
+        // 注册方法会自动判断是否支持华为系统推送，如不支持会跳过注册。
+        HuaWeiRegister.register(applicationContext);
+        //GCM/FCM辅助通道注册
+//        GcmRegister.register(this, sendId, applicationId); //sendId/applicationId为步骤获得的参数
+        // OPPO通道注册
+//        OppoRegister.register(applicationContext, appKey, appSecret); // appKey/appSecret在OPPO通道开发者平台获取
     }
 
     /**

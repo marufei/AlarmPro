@@ -76,4 +76,7 @@ dependencies {
     //阿里云推送
     compile 'com.aliyun.ams:alicloud-android-push:3.1.4'
 
+    //阿里辅助通道 暂只支持小米 华为 oppo（oppo 通道 需使用 v3.0.6 版本，应用满足：1、在 oppo 市场上架，2、评级为 A.）
+    compile 'com.aliyun.ams:alicloud-android-third-push:3.0.6@aar'
+
 }

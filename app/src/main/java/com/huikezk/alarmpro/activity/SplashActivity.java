@@ -1,13 +1,19 @@
 package com.huikezk.alarmpro.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.view.View;
 import android.view.WindowManager;
 
+import com.alibaba.sdk.android.push.AndroidPopupActivity;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
@@ -26,7 +32,9 @@ import net.igenius.mqttservice.MQTTServiceCommand;
 
 import org.json.JSONObject;
 
-public class SplashActivity extends BaseActivity {
+import java.util.Map;
+
+public class SplashActivity extends  AndroidPopupActivity {
 
     public final int MSG_FINISH_LAUNCHERACTIVITY = 500;
     public Handler mHandler = new Handler() {
@@ -52,7 +60,7 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         // 不显示系统的标题栏，保证windowBackground和界面activity_main的大小一样，显示在屏幕不会有错位（去掉这一行试试就知道效果了）
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setDarkStatusIcon(true);
+//        setDarkStatusIcon(true);
         //如果从后台进入APP不再显示启动页
         if (!isTaskRoot() && getIntent() != null) {
             String action = getIntent().getAction();
@@ -69,7 +77,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void initData() {
-        MyApplication.flag = 0;
+//        MyApplication.flag = 0;
         if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.TEL)) &&
                 !TextUtils.isEmpty(SaveUtils.getString(KeyUtils.PWD))) {
             login();
@@ -83,7 +91,7 @@ public class SplashActivity extends BaseActivity {
      * 登录
      */
     private void login() {
-        showLoadingAnim(this);
+//        showLoadingAnim(this);
         String url = HttpsConts.BASE_URL + HttpsConts.LOGIN
                 + "?username=" + SaveUtils.getString(KeyUtils.TEL)
                 + "&password=" + SaveUtils.getString(KeyUtils.PWD);
@@ -91,7 +99,7 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void onResponse(String response) {
                 MyUtils.Loge(TAG, "response:" + response);
-                hideLoadingAnim(SplashActivity.this);
+//                hideLoadingAnim(SplashActivity.this);
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     String status = jsonObject.getString("status");
@@ -117,7 +125,7 @@ public class SplashActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                hideLoadingAnim(SplashActivity.this);
+//                hideLoadingAnim(SplashActivity.this);
                 MyUtils.showToast(SplashActivity.this, "网络有问题");
             }
         });
@@ -167,5 +175,15 @@ public class SplashActivity extends BaseActivity {
 
     }
 
+    /**
+     * 辅助弹窗指定打开Activity回调
+     * @param title     标题
+     * @param content   内容
+     * @param extraMap  额外参数
+     */
+    @Override
+    protected void onSysNoticeOpened(String title, String content, Map<String, String> extraMap) {
+        MyUtils.Loge(TAG, "Receive XiaoMi notification, title: " + title + ", content: " + content + ", extraMap: " + extraMap);
 
+    }
 }

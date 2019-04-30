@@ -71,15 +71,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         initEvent();
         initData();
 //        updateUmengToken();
-        //连接MQTT
-//        MQTTService.NAMESPACE = BuildConfig.APPLICATION_ID;
-//        if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.MQTT_URL))) {
-//            MQTTServiceCommand.connect(getApplicationContext(),
-//                    "tcp://"+SaveUtils.getString(KeyUtils.MQTT_URL),
-//                    Build.SERIAL,
-//                    "admin",
-//                    "123456");
-//        }
     }
 
     private void initData() {
@@ -275,10 +266,10 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-
-    }
+//    @Override
+//    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+//
+//    }
 
     @Override
     protected void onDestroy() {
