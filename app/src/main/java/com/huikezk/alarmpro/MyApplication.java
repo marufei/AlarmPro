@@ -7,17 +7,13 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.multidex.MultiDex;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
-import com.alibaba.sdk.android.push.register.GcmRegister;
 import com.alibaba.sdk.android.push.register.HuaWeiRegister;
 import com.alibaba.sdk.android.push.register.MiPushRegister;
-import com.alibaba.sdk.android.push.register.OppoRegister;
 import com.huikezk.alarmpro.entity.LoginEntity;
 import com.huikezk.alarmpro.service.ListenerManager;
 import com.huikezk.alarmpro.utils.KeyUtils;
@@ -165,11 +161,6 @@ public class MyApplication extends Application {
     };
 
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
-    }
 
     @Override
     public void onCreate() {

@@ -8,7 +8,6 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        multiDexEnabled = true //表示可以进行分包, 用于启用MultiDex
 
         ndk {
             //选择要添加的对应cpu类型的.so库。
@@ -62,9 +61,6 @@ dependencies {
     //    MQTT
     implementation 'net.igenius:mqttservice:1.6.4'
 
-    //    解决jar包导入过多，方法数超过65535个，导致APP闪退
-    //支持包用于5.0以下系统
-    compile 'com.android.support:multidex:1.0.1'
 
     //glide
     implementation 'com.github.bumptech.glide:glide:4.6.1'
