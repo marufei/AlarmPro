@@ -26,8 +26,10 @@ import com.huikezk.alarmpro.adapter.RepairInfoGvAdapter;
 import com.huikezk.alarmpro.entity.RepairHistoryEntity;
 import com.huikezk.alarmpro.entity.RepairInfoEntity;
 import com.huikezk.alarmpro.utils.ActivityUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.PictureUtil;
+import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 import com.huikezk.alarmpro.views.GridViewForScrollView;
 
@@ -88,7 +90,7 @@ public class RepairInfoActivity extends BaseActivity {
             return;
         }
         showLoadingAnim(this);
-        String url = MyApplication.IP + HttpsConts.REPAIR_INFO + MyApplication.PROJECT_NUM;
+        String url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.REPAIR_INFO + SaveUtils.getString(KeyUtils.PROJECT_NUM);
         MyUtils.Loge(TAG, "URL:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

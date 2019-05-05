@@ -1,10 +1,9 @@
 package com.huikezk.alarmpro.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -19,24 +18,25 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.huikezk.alarmpro.BuildConfig;
+import com.google.gson.Gson;
 import com.huikezk.alarmpro.HttpsAddress.HttpsConts;
 import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.MainVpAdapter;
+import com.huikezk.alarmpro.entity.LoginEntity;
+import com.huikezk.alarmpro.entity.UpdateEntity;
 import com.huikezk.alarmpro.fragment.HomeFragment;
 import com.huikezk.alarmpro.fragment.MineFragment;
 import com.huikezk.alarmpro.fragment.NewsFragment;
 import com.huikezk.alarmpro.fragment.RepairFragment;
+import com.huikezk.alarmpro.service.ListenerManager;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
+import com.huikezk.alarmpro.utils.UpdateManger;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 import com.huikezk.alarmpro.views.MyViewPager;
-
-import net.igenius.mqttservice.MQTTService;
-import net.igenius.mqttservice.MQTTServiceCommand;
 
 import org.json.JSONObject;
 
@@ -45,7 +45,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener {
+public class MainActivity extends CheckPermissionsActivity implements MyApplication.PushSuccessListener,
+        RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener {
 
     private MyViewPager vp_show;
     private RadioButton rb0, rb1, rb2, rb3;
@@ -62,18 +63,32 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     boolean showToast = true;
     private String TAG = "MainActivity";
     private RelativeLayout main_rl2, main_rl3;
+    private String[] permissions = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,};
+    /**
+     * 进入第几个界面
+     */
+    private int currentPage;
+    /**
+     * 推送过来的项目名
+     */
+    private String projectName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MyApplication.getInstance().setPushSuccessListener(this);
         initView();
         initEvent();
         initData();
-//        updateUmengToken();
+        setPermission(permissions);
+        getUpdateInfo();
     }
 
     private void initData() {
+        MyApplication.getInstance().setPushSuccessListener(this);
         List<String> alarmList = SaveUtils.getAllEndWithKey("alarm");
         List<String> repair = SaveUtils.getAllEndWithKey("repair");
         showPoint(alarmList, main_rl2);
@@ -91,7 +106,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         if (list != null && list.size() > 0) {
             List<String> proList = new ArrayList<>();
             for (String str : list) {
-                if (str.contains(MyApplication.PROJECT_NAME)) {
+                if (str.contains(SaveUtils.getString(KeyUtils.PROJECT_NAME))) {
                     proList.add(str);
                 }
             }
@@ -123,10 +138,34 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     }
 
     private void initEvent() {
+        currentPage = getIntent().getIntExtra("currentPage", 0);
+        projectName = getIntent().getStringExtra("projectName");
+        if (!TextUtils.isEmpty(projectName)) {
+            resetProject(projectName);
+        }
+        switch (currentPage) {
+            case 0:
+                //设置主页第一个分页被选中
+                rb0.setSelected(true);
+                rb0.setChecked(true);
+                break;
+            case 1:
+                //设置主页第一个分页被选中
+                rb1.setSelected(true);
+                rb1.setChecked(true);
+                break;
+            case 2:
+                //设置主页第一个分页被选中
+                rb2.setSelected(true);
+                rb2.setChecked(true);
+                break;
+            case 3:
+                //设置主页第一个分页被选中
+                rb3.setSelected(true);
+                rb3.setChecked(true);
+                break;
+        }
 
-        //设置主页第一个分页被选中
-        rb0.setSelected(true);
-        rb0.setChecked(true);
 
         fragment1 = new HomeFragment();
         fragment2 = new NewsFragment();
@@ -139,9 +178,34 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
         rg_bottom.setOnCheckedChangeListener(this);
         vp_show.setAdapter(new MainVpAdapter(getSupportFragmentManager()));
-        vp_show.setCurrentItem(0);
+        vp_show.setCurrentItem(currentPage);
         vp_show.setOffscreenPageLimit(3);
         vp_show.addOnPageChangeListener(this);
+    }
+
+    /**
+     * 根据推送重置当前门店
+     *
+     * @param projectName
+     */
+    private void resetProject(String projectName) {
+        List<LoginEntity.DataBean.ProjectNameBean> proList = MyApplication.loginEntity.getData().getProjectName();
+//        MyApplication.PROJECT_NAME = projectName;
+        SaveUtils.setString(KeyUtils.PROJECT_NAME, projectName);
+        for (int i = 0; i < proList.size(); i++) {
+            if (proList.get(i).getProjectName().equals(projectName)) {
+//                MyApplication.PROJECT_NUM = proList.get(i).getProjectNum();
+                SaveUtils.setString(KeyUtils.PROJECT_NUM, String.valueOf(proList.get(i).getProjectNum()));
+                MyApplication.MOUDLE = proList.get(i).getModules();
+            }
+        }
+//        MyApplication.PROJECT_SEND = "/" + projectName + "/";
+        SaveUtils.setString(KeyUtils.PROJECT_SEND, "/" + projectName + "/");
+//        MyUtils.Loge(TAG, "项目名：" + MyApplication.PROJECT_NAME + "--发送指令头："
+//                + MyApplication.PROJECT_SEND + "--项目号：" + MyApplication.PROJECT_NUM +
+//                "--模块：" + MyApplication.MOUDLE);
+        ListenerManager.getInstance().sendBroadCast("项目名改变");
+
     }
 
     @Override
@@ -192,9 +256,10 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         }
     }
 
-    private void updateUmengToken() {
+    private void updateUmengToken(final String token) {
         String url = HttpsConts.BASE_URL + HttpsConts.UMENG_TOKEN;
         MyUtils.Loge(TAG, "url::" + url);
+        MyUtils.Loge(TAG, "USER_ID:" + SaveUtils.getString(KeyUtils.USER_ID));
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -215,14 +280,15 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                MyUtils.Loge(TAG, "updateUmengToken--------网络有问题");
                 MyUtils.showToast(MainActivity.this, "网络有问题");
             }
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<>();
-                map.put("userId", MyApplication.USER_ID);
-                map.put("CID", MyApplication.UMENG_TOKEN);
+                map.put("userId", SaveUtils.getString(KeyUtils.USER_ID));
+                map.put("CID", token);
                 return map;
             }
         };
@@ -271,9 +337,60 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 //
 //    }
 
+
+
+    public void getUpdateInfo() {
+        String url = HttpsConts.BASE_URL + HttpsConts.UPDATE;
+        StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                MyUtils.Loge(TAG, "getUpdateInfo（）-- response:" + response);
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    String status = jsonObject.getString("status");
+                    if (status.equals("1")) {
+                        Gson gson = new Gson();
+                        UpdateEntity updateEntity = gson.fromJson(response, UpdateEntity.class);
+                        if (updateEntity != null && updateEntity.getData() != null) {
+                            MyApplication.update_url = updateEntity.getData().getAndroid_url();
+                            MyApplication.update_content = updateEntity.getData().getDescription();
+                            if (Double.valueOf(updateEntity.getData().getVersion_code()) > MyUtils.getVersionCode(MainActivity.this)
+                                    && !TextUtils.isEmpty(updateEntity.getData().getAndroid_url())) {
+                                // TODO 下载
+                                downloadApk(updateEntity.getData().getVersion_code());
+                            }
+                        }
+                    } else {
+                        String msg = jsonObject.getString("message");
+                        ActivityUtil.toLogin(MainActivity.this, status, msg);
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                MyUtils.Loge(TAG, "getUpdateInfo()--网络有问题");
+                MyUtils.showToast(MainActivity.this, "网络有问题");
+            }
+        });
+        VolleyUtils.setTimeOut(stringRequest);
+        VolleyUtils.getInstance(MainActivity.this).addToRequestQueue(stringRequest);
+    }
+
+    private void downloadApk(int version) {
+        new UpdateManger(MainActivity.this, 1).checkUpdateInfo();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
+    }
+
+    @Override
+    public void onSuccess(String string) {
+        updateUmengToken(string);
     }
 }

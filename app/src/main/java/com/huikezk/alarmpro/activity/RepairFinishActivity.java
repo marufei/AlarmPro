@@ -21,15 +21,20 @@ import com.android.volley.toolbox.StringRequest;
 import com.donkingliang.imageselector.utils.ImageSelector;
 import com.donkingliang.imageselector.utils.ImageSelectorUtils;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.huikezk.alarmpro.HttpsAddress.HttpsConts;
 import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.RepairGvAdapter;
+import com.huikezk.alarmpro.adapter.RepairInfoGvAdapter;
 import com.huikezk.alarmpro.entity.RepairEntity;
+import com.huikezk.alarmpro.entity.RepairInfoEntity;
 import com.huikezk.alarmpro.entity.UploadEntity;
 import com.huikezk.alarmpro.utils.ActivityUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.PictureUtil;
+import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.UploadUtil;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 import com.huikezk.alarmpro.views.GridViewForScrollView;
@@ -64,14 +69,16 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
             super.handleMessage(msg);
             if (msg.what == MSG_DOWN_SUCCESS) {
 
-                urlList.add(MyApplication.IP.substring(0,MyApplication.IP.length()-1)+msg.obj);
+                urlList.add(SaveUtils.getString(KeyUtils.PROJECT_IP).substring(0,SaveUtils.getString(KeyUtils.PROJECT_IP).length()-1)+msg.obj);
             }
             if (msg.what==MSG_ALL_SUCCESS){
-                urlList.add(MyApplication.IP.substring(0,MyApplication.IP.length()-1)+msg.obj);
+                urlList.add(SaveUtils.getString(KeyUtils.PROJECT_IP).substring(0,SaveUtils.getString(KeyUtils.PROJECT_IP).length()-1)+msg.obj);
                 commit();
             }
         }
     };
+    private GridViewForScrollView repair_finish_grid;
+    private RepairInfoGvAdapter repairAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +95,8 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
     private void initData() {
         repairEntity = (RepairEntity) getIntent().getSerializableExtra("repairBean");
         if (repairEntity != null) {
-            setView();
+//            setView();
+            getrepairInfo();
         }
     }
 
@@ -104,6 +112,9 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
         repair_finish_gv=findViewById(R.id.repair_finish_gv);
         adapter=new RepairGvAdapter(this);
         repair_finish_gv.setAdapter(adapter);
+        repair_finish_grid=findViewById(R.id.repair_finish_grid);
+        repairAdapter=new RepairInfoGvAdapter(this);
+        repair_finish_grid.setAdapter(repairAdapter);
     }
 
     public static void start(Context context, RepairEntity listData) {
@@ -169,7 +180,7 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
      * 提交维修信息
      */
     private void commit() {
-        String url = MyApplication.IP + HttpsConts.REPAIR + MyApplication.PROJECT_NUM;
+        String url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.REPAIR + SaveUtils.getString(KeyUtils.PROJECT_NUM);
         MyUtils.Loge(TAG, "URL:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -207,20 +218,16 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
                 if (!TextUtils.isEmpty(repairEntity.getUsername())) {
                     map.put("username", repairEntity.getUsername());
                 }
-                if (!TextUtils.isEmpty(MyApplication.NICK_NAME)) {
-                    map.put("finishNickName", MyApplication.NICK_NAME);
+                if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.NICK_NAME))) {
+                    map.put("finishNickName", SaveUtils.getString(KeyUtils.NICK_NAME));
                 }
-                if (!TextUtils.isEmpty(MyApplication.USER_NAME)) {
-                    map.put("finishUsername", MyApplication.USER_NAME);
+                if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.USER_NAME))) {
+                    map.put("finishUsername", SaveUtils.getString(KeyUtils.USER_NAME));
                 }
                 map.put("finishRepairInfo", repair_finish_et_input.getText().toString().trim());
                 if (urlList.size()>0) {
                     map.put("finishImgs", new Gson().toJson(urlList));
                 }
-                MyUtils.Loge(TAG,"nickName:"+repairEntity.getNickName());
-                MyUtils.Loge(TAG,"userName:"+repairEntity.getUsername());
-                MyUtils.Loge(TAG,"finishNickName:"+MyApplication.NICK_NAME);
-                MyUtils.Loge(TAG,"finishUserName:"+MyApplication.USER_NAME);
                 return map;
             }
         };
@@ -259,7 +266,7 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void run() {
                 super.run();
-                String url = MyApplication.IP + HttpsConts.UPDATE_FILE;
+                String url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.UPDATE_FILE;
                 MyUtils.Loge(TAG, "url:" + url);
                 Map<String, File> files = new HashMap<String, File>();
                 files.put("files", file);
@@ -287,5 +294,79 @@ public class RepairFinishActivity extends BaseActivity implements View.OnClickLi
             }
         }.start();
 
+    }
+
+    /**
+     * 获取报修详情
+     */
+    private void getrepairInfo(){
+        final String repairId = repairEntity.getId();
+        if (TextUtils.isEmpty(repairId)) {
+            return;
+        }
+        showLoadingAnim(this);
+        String url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.REPAIR_INFO + SaveUtils.getString(KeyUtils.PROJECT_NUM);
+        MyUtils.Loge(TAG, "URL:" + url);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                MyUtils.Loge(TAG, "response:" + response);
+                hideLoadingAnim(RepairFinishActivity.this);
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    String status = jsonObject.getString("status");
+                    if (status.equals("1")) {
+                        Gson gson = new Gson();
+                        RepairInfoEntity repairInfoEntity = gson.fromJson(response, RepairInfoEntity.class);
+                        if (repairInfoEntity != null && repairInfoEntity.getData() != null) {
+                            setViews(repairInfoEntity.getData());
+                        }
+                    } else {
+                        String msg = jsonObject.getString("message");
+                        ActivityUtil.toLogin(RepairFinishActivity.this, status, msg);
+                    }
+                } catch (Exception e) {
+                    MyUtils.Loge(TAG, "e:" + e.getMessage());
+                    MyUtils.Loge(TAG, "e:" + e.toString());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                hideLoadingAnim(RepairFinishActivity.this);
+                MyUtils.showToast(RepairFinishActivity.this, "网络有问题");
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> map = new HashMap<>();
+                map.put("history", "true");
+                map.put("id", repairId);
+                return map;
+            }
+        };
+        VolleyUtils.setTimeOut(stringRequest);
+        VolleyUtils.getInstance(RepairFinishActivity.this).addToRequestQueue(stringRequest);
+    }
+
+    private void setViews(RepairInfoEntity.DataBean data) {
+        if (!TextUtils.isEmpty(data.getNickName())) {
+            repair_finish_name.setText(data.getNickName());
+        }
+        if (!TextUtils.isEmpty(data.getDatetime())) {
+            repair_finish_time.setText(data.getDatetime());
+        }
+        if (!TextUtils.isEmpty(data.getRepairInfo())) {
+            repair_finish_content.setText(data.getRepairInfo());
+        }
+
+        if (data.getImgs() != null) {
+            List<String> list = new Gson().fromJson(data.getImgs(), new TypeToken<List<String>>() {
+            }.getType());
+            if (list!=null){
+                repairAdapter.setListData(list);
+                repairAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }

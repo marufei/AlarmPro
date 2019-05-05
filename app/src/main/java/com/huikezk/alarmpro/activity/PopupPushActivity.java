@@ -1,17 +1,11 @@
 package com.huikezk.alarmpro.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.view.View;
 import android.view.WindowManager;
+import android.widget.PopupWindow;
 
 import com.alibaba.sdk.android.push.AndroidPopupActivity;
 import com.android.volley.Response;
@@ -28,71 +22,53 @@ import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 
-import net.igenius.mqttservice.MQTTService;
 import net.igenius.mqttservice.MQTTServiceCommand;
 
 import org.json.JSONObject;
 
 import java.util.Map;
 
-public class SplashActivity extends BaseActivity {
+public class PopupPushActivity extends AndroidPopupActivity {
 
-    public final int MSG_FINISH_LAUNCHERACTIVITY = 500;
-    public Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_FINISH_LAUNCHERACTIVITY:
-                    //跳转到登录界面
-                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                    break;
+    static final String TAG = "PopupPushActivity";
 
-                default:
-                    break;
-            }
-        }
-    };
-    private String TAG = "SplashActivity";
-    private String[] projectList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 不显示系统的标题栏，保证windowBackground和界面activity_main的大小一样，显示在屏幕不会有错位（去掉这一行试试就知道效果了）
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setDarkStatusIcon(true);
-        //如果从后台进入APP不再显示启动页
-//        if (!isTaskRoot() && getIntent() != null) {
-//            String action = getIntent().getAction();
-//            if (getIntent().hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(action)) {
-//                finish();
-//                return;
-//            }
-//        }
-        setContentView(R.layout.activity_splash);
 
-
-        initData();
-
+        setContentView(R.layout.activity_popup_push);
     }
 
-    private void initData() {
-//        MyApplication.flag = 0;
-        if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.TEL)) &&
-                !TextUtils.isEmpty(SaveUtils.getString(KeyUtils.PWD))) {
-            login();
-        } else {
-            // 停留3秒后发送消息，跳转到登录界面
-            mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, 3000);
+    /**
+     * 实现通知打开回调方法，获取通知相关信息
+     *
+     * @param title   标题
+     * @param summary 内容
+     * @param extMap  额外参数
+     */
+    @Override
+    protected void onSysNoticeOpened(String title, String summary, Map<String, String> extMap) {
+        MyUtils.Loge(TAG, "OnMiPushSysNoticeOpened, title: " + title + ", content: " + summary + ", extMap: " + extMap);
+        String projectName = extMap.get("projectName");
+        String messageType = extMap.get("messageType");
+        MyUtils.Loge(TAG, "projectName:" + projectName + "--messageType:" + messageType);
+
+
+        if (!TextUtils.isEmpty(projectName) && !TextUtils.isEmpty(messageType)) {
+
+            login(projectName, messageType);
+
         }
+
     }
 
     /**
      * 登录
      */
-    private void login() {
-        showLoadingAnim(this);
+    private void login(final String projectName, final String messageType) {
         String url = HttpsConts.BASE_URL + HttpsConts.LOGIN
                 + "?username=" + SaveUtils.getString(KeyUtils.TEL)
                 + "&password=" + SaveUtils.getString(KeyUtils.PWD);
@@ -100,7 +76,6 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void onResponse(String response) {
                 MyUtils.Loge(TAG, "response:" + response);
-                hideLoadingAnim(SplashActivity.this);
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     String status = jsonObject.getString("status");
@@ -108,20 +83,31 @@ public class SplashActivity extends BaseActivity {
                         Gson gson = new Gson();
                         LoginEntity loginEntity = gson.fromJson(response, LoginEntity.class);
                         if (loginEntity != null && loginEntity.getData() != null) {
-                            if (loginEntity != null && loginEntity.getData() != null) {
-                                MyApplication.loginEntity = loginEntity;
-                                setSP(loginEntity.getData());
-                                if (MyApplication.myConnected){
-                                    MainActivity.start(SplashActivity.this);
-                                }else {
-                                    IninMQttDataActivity.start(SplashActivity.this);
-                                }
-                                finish();
+                            MyApplication.loginEntity = loginEntity;
+                            setSP(loginEntity.getData());
+                            switch (messageType) {
+                                case "alarm":
+                                    Intent intent = new Intent(PopupPushActivity.this, MainActivity.class);
+                                    intent.putExtra("currentPage", 1);
+                                    intent.putExtra("projectName", projectName);
+                                    startActivity(intent);
+                                    finish();
+                                    break;
+                                case "repair":
+                                    Intent intent1 = new Intent(PopupPushActivity.this, MainActivity.class);
+                                    intent1.putExtra("currentPage", 2);
+                                    intent1.putExtra("projectName", projectName);
+                                    startActivity(intent1);
+                                    finish();
+                                    break;
+                                default:
+                                    finish();
+                                    break;
                             }
                         }
                     } else {
                         String msg = jsonObject.getString("message");
-                        ActivityUtil.toLogin(SplashActivity.this, status, msg);
+                        ActivityUtil.toLogin(PopupPushActivity.this, status, msg);
                     }
                 } catch (Exception e) {
 
@@ -130,12 +116,11 @@ public class SplashActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                hideLoadingAnim(SplashActivity.this);
-                MyUtils.showToast(SplashActivity.this, "网络有问题");
+                MyUtils.showToast(PopupPushActivity.this, "网络有问题");
             }
         });
         VolleyUtils.setTimeOut(stringRequest);
-        VolleyUtils.getInstance(SplashActivity.this).addToRequestQueue(stringRequest);
+        VolleyUtils.getInstance(PopupPushActivity.this).addToRequestQueue(stringRequest);
 
     }
 
@@ -151,10 +136,10 @@ public class SplashActivity extends BaseActivity {
 //            MyApplication.PROJECT_NAME = data.getProjectName().get(0).getProjectName();
 //            MyApplication.PROJECT_SEND = "/" + data.getProjectName().get(0).getProjectName() + "/";
 //            MyApplication.PROJECT_NUM = data.getProjectName().get(0).getProjectNum();
-            SaveUtils.setString(KeyUtils.PROJECT_NAME,data.getProjectName().get(0).getProjectName());
-            SaveUtils.setString(KeyUtils.PROJECT_SEND,"/" + data.getProjectName().get(0).getProjectName() + "/");
-            SaveUtils.setString(KeyUtils.PROJECT_NUM,String.valueOf(data.getProjectName().get(0).getProjectNum()));
-            projectList = new String[data.getProjectName().size()];
+            SaveUtils.setString(KeyUtils.PROJECT_NAME, data.getProjectName().get(0).getProjectName());
+            SaveUtils.setString(KeyUtils.PROJECT_SEND, "/" + data.getProjectName().get(0).getProjectName() + "/");
+            SaveUtils.setString(KeyUtils.PROJECT_NUM, String.valueOf(data.getProjectName().get(0).getProjectNum()));
+            String[] projectList = new String[data.getProjectName().size()];
             String topics = "";
             for (int i = 0; i < data.getProjectName().size(); i++) {
                 projectList[i] = "/" + data.getProjectName().get(i).getProjectName() + "/#";
@@ -176,16 +161,15 @@ public class SplashActivity extends BaseActivity {
         SaveUtils.setString(KeyUtils.TEL, data.getUsername());
         SaveUtils.setString(KeyUtils.PWD, data.getPassword());
         SaveUtils.setString(KeyUtils.PIC_URL, data.getImage());
-//        if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.MQTT_URL))) {
-//            MyUtils.Loge(TAG, "clientId：" + Build.SERIAL);
-////            MQTTService.NAMESPACE = BuildConfig.APPLICATION_ID;
-//            MQTTServiceCommand.connect(getApplicationContext(),
-//                    "tcp://" + SaveUtils.getString(KeyUtils.MQTT_URL),
-//                    Build.SERIAL,
-//                    "admin",
-//                    "123456");
-//        }
+        if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.MQTT_URL))) {
+            MyUtils.Loge(TAG, "clientId：" + Build.SERIAL);
+//            MQTTService.NAMESPACE = BuildConfig.APPLICATION_ID;
+            MQTTServiceCommand.connect(getApplicationContext(),
+                    "tcp://" + SaveUtils.getString(KeyUtils.MQTT_URL),
+                    Build.SERIAL,
+                    "admin",
+                    "123456");
+        }
 
     }
-
 }

@@ -410,7 +410,7 @@ public class BaseActivity extends AppCompatActivity implements IListener {
         //是否保留
         boolean retained = false;
 
-        MQTTServiceCommand.publish(this, topic, msg.getBytes());
+        MQTTServiceCommand.publish(getApplicationContext(), topic, msg.getBytes());
     }
 
     @Override
@@ -498,5 +498,6 @@ public class BaseActivity extends AppCompatActivity implements IListener {
     @Override
     public void notifyAllActivity(String str) {
 //        MyUtils.Loge(TAG, "BaseActivity收到广播");
+
     }
 }

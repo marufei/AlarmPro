@@ -11,6 +11,8 @@ import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.LightInfoLvAdapter;
 import com.huikezk.alarmpro.adapter.LightLvAdapter;
 import com.huikezk.alarmpro.entity.LightEntity;
+import com.huikezk.alarmpro.utils.KeyUtils;
+import com.huikezk.alarmpro.utils.SaveUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ public class LightInfoActivity extends BaseActivity {
         LightEntity.DataBean dataBean = (LightEntity.DataBean) getIntent().getSerializableExtra("dataBean");
         if (dataBean!=null){
             name=dataBean.getName();
-            String sendName= MyApplication.PROJECT_SEND+title+"/"+name+"/";
+            String sendName= SaveUtils.getString(KeyUtils.PROJECT_SEND)+title+"/"+name+"/";
             setTitle(name);
             listData.clear();
             listData.addAll(dataBean.getInfo());

@@ -5,8 +5,10 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.alibaba.sdk.android.push.CloudPushService;
@@ -14,6 +16,7 @@ import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.alibaba.sdk.android.push.register.HuaWeiRegister;
 import com.alibaba.sdk.android.push.register.MiPushRegister;
+import com.huikezk.alarmpro.activity.SplashActivity;
 import com.huikezk.alarmpro.entity.LoginEntity;
 import com.huikezk.alarmpro.service.ListenerManager;
 import com.huikezk.alarmpro.utils.KeyUtils;
@@ -36,39 +39,19 @@ import java.util.List;
  * update：
  */
 public class MyApplication extends Application {
+
     /**
-     * 友盟token
+     * 更新地址
      */
-    public static String UMENG_TOKEN;
-    public static String PIC_URL = "";
+    public static String update_url="";
+
+    /**
+     * 更新内容
+     */
+    public static String update_content="";
+
     private String TAG = "MyApplication";
 
-    /**
-     * userId
-     */
-    public static String USER_ID = "";
-
-    /**
-     * 工程号
-     */
-    public static int PROJECT_NUM;
-
-    /**
-     * 用户昵称
-     */
-    public static String NICK_NAME = "";
-
-    /**
-     * 用户名
-     */
-    public static String USER_NAME = "";
-
-    /**
-     * 选中的项目名
-     */
-    public static String PROJECT_NAME = "";
-
-    public static String PROJECT_SEND = "";
 
     public static LoginEntity loginEntity;
 
@@ -97,11 +80,34 @@ public class MyApplication extends Application {
     private static List<Activity> activities;
     private static MyApplication mInstance;
 
+    private int activityCount = 0;
+    private long firstTime = 0;
+    private long lastTime = 0;
+
+    PushSuccessListener pushSuccessListener;
+
+    /**
+     * 当前栈顶的activity
+     */
+    private Activity currentActivity;
+
+    public void setPushSuccessListener(PushSuccessListener pushSuccessListener) {
+        this.pushSuccessListener = pushSuccessListener;
+    }
+
     /**
      * 第一次进来订阅
      */
     private boolean isFirst = true;
+
+    /**
+     * MQTT连接状态
+     */
+    public static boolean myConnected;
+
     MQTTServiceReceiver receiver = new MQTTServiceReceiver() {
+
+
         @Override
         public void onSubscriptionSuccessful(Context context,
                                              String requestId, String topic) {
@@ -156,10 +162,9 @@ public class MyApplication extends Application {
 
         @Override
         public void onConnectionStatus(Context context, boolean connected) {
-
+            myConnected=connected;
         }
     };
-
 
 
     @Override
@@ -167,9 +172,11 @@ public class MyApplication extends Application {
         super.onCreate();
         mInstance = this;
         MQTTService.NAMESPACE = "com.huikezk.alarmpro";
+//        registerActivityCallbacks();
         NotificationChannel();
         initCloudChannel(this);
         receiver.register(getApplicationContext());
+
     }
 
     /**
@@ -184,7 +191,9 @@ public class MyApplication extends Application {
             @Override
             public void onSuccess(String response) {
                 MyUtils.Loge(TAG, "init cloudchannel success");
-                pushService.getDeviceId();
+                if (pushSuccessListener != null && !TextUtils.isEmpty(pushService.getDeviceId())) {
+                    pushSuccessListener.onSuccess(pushService.getDeviceId());
+                }
             }
 
             @Override
@@ -204,9 +213,9 @@ public class MyApplication extends Application {
     }
 
     /**
-     *  注册NotificationChannel
+     * 注册NotificationChannel
      */
-    private void NotificationChannel(){
+    private void NotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             // 通知渠道的id
@@ -229,7 +238,6 @@ public class MyApplication extends Application {
             mNotificationManager.createNotificationChannel(mChannel);
         }
     }
-
 
 
     public static MyApplication getInstance() {
@@ -333,6 +341,91 @@ public class MyApplication extends Application {
         }
     }
 
+    private void registerActivityCallbacks() {
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                currentActivity = activity;
+                MyUtils.Loge(TAG, "onActivityCreated--currentActivity:" + currentActivity.toString());
+
+            }
+
+            @Override
+            public void onActivityStarted(final Activity activity) {
+//                //等于0时就是从后台或者打开app  这里SplashActivity就是你的启动页面如果不是启动页面就是后台进来的
+//                MyUtils.Loge(TAG, "onActivityStarted---------activityCount:" + activityCount + "--firstTime:" + firstTime + "--lastTime:" + lastTime);
+//                if (0 == activityCount && !(activity instanceof SplashActivity)) {
+//                    firstTime = System.currentTimeMillis();
+//                    if ((firstTime - lastTime) > (2 * 60 * 1000)) {
+//                        //超过2分钟在后台就进入解锁页面
+//                        Intent intent = new Intent(getApplicationContext(), SplashActivity.class);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        startActivity(intent);
+//                        finishAllActivity();
+//                        receiver.unregister(getApplicationContext());
+//                    }
+//                }else {
+//                    receiver.register(getApplicationContext());
+//                }
+//                activityCount++;
+                currentActivity = activity;
+                MyUtils.Loge(TAG, "onActivityStarted--currentActivity:" + currentActivity.toString());
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                currentActivity = activity;
+                MyUtils.Loge(TAG, "onActivityResumed--currentActivity:" + currentActivity.toString());
+
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+                currentActivity = activity;
+                MyUtils.Loge(TAG, "onActivityPaused--currentActivity:" + currentActivity.toString());
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+//                activityCount--;
+//                MyUtils.Loge(TAG, "onActivityStopped-----activityCount:" + activityCount + "--firstTime:" + firstTime + "--lastTime:" + lastTime);
+//                if (0 == activityCount) {
+//                    lastTime = System.currentTimeMillis();//等于0时 就是从后台进来的
+//                    if (lastTime == 0) {
+//                        Intent intent = new Intent(getApplicationContext(), SplashActivity.class);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        startActivity(intent);
+//                        finishAllActivity();
+//                        receiver.unregister(getApplicationContext());
+//                    }
+//                }else {
+//                    receiver.register(getApplicationContext());
+//                }
+                currentActivity = activity;
+                MyUtils.Loge(TAG, "onActivityStopped--currentActivity:" + currentActivity.toString());
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+                currentActivity = activity;
+                MyUtils.Loge(TAG, "onActivitySaveInstanceState--currentActivity:" + currentActivity.toString());
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                currentActivity = activity;
+                MyUtils.Loge(TAG, "onActivityDestroyed--currentActivity:" + currentActivity.toString());
+            }
+        });
+    }
+
+    public interface PushSuccessListener {
+        void onSuccess(String string);
+    }
 
 
+    public Activity getCurrentActivity() {
+        return currentActivity;
+    }
 }

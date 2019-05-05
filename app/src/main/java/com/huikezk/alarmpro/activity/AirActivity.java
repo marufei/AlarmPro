@@ -19,7 +19,9 @@ import com.huikezk.alarmpro.adapter.AirLvAdapter;
 import com.huikezk.alarmpro.entity.AirEntity;
 import com.huikezk.alarmpro.entity.ProjectInfoEntity;
 import com.huikezk.alarmpro.utils.ActivityUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
+import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 
 import org.json.JSONObject;
@@ -80,7 +82,7 @@ public class AirActivity extends BaseActivity {
      * 获取项目详细信息
      */
     public void getProjectInfo() {
-        String url = MyApplication.IP + HttpsConts.PROJECT_INFO + MyApplication.PROJECT_NUM;
+        String url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.PROJECT_INFO + SaveUtils.getString(KeyUtils.PROJECT_NUM);
         MyUtils.Loge(TAG, "url::" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

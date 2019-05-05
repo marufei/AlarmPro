@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class PartInfoActivity extends BaseActivity {
     private void initData() {
         title = getIntent().getStringExtra("title");
         part = getIntent().getStringExtra("part");
-        sendOrder = MyApplication.PROJECT_SEND + part + "/" + title + "/";
+        sendOrder = SaveUtils.getString(KeyUtils.PROJECT_SEND) + part + "/" + title + "/";
         setTitle(title);
         setView();
     }

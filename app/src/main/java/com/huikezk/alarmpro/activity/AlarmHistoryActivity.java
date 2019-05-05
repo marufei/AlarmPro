@@ -25,7 +25,9 @@ import com.huikezk.alarmpro.entity.AlarmHistoryEntity;
 import com.huikezk.alarmpro.entity.AlarmRecordEntity;
 import com.huikezk.alarmpro.entity.BaseEntity;
 import com.huikezk.alarmpro.utils.ActivityUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
+import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 
 import org.json.JSONObject;
@@ -126,7 +128,7 @@ public class AlarmHistoryActivity extends BaseActivity implements View.OnClickLi
      */
     public void getAlarmHistory(){
         showLoadingAnim(this);
-        String url = MyApplication.IP + HttpsConts.ALARM_INFO + MyApplication.PROJECT_NUM;
+        String url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.ALARM_INFO + SaveUtils.getString(KeyUtils.PROJECT_NUM);
         MyUtils.Loge(TAG, "URL:" + url);
         final StringRequest stringRequest = new StringRequest(Request.Method.POST,url, new Response.Listener<String>() {
             @Override

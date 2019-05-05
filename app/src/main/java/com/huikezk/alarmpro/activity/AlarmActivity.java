@@ -19,7 +19,9 @@ import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.AlarmHistoryLvAdapter;
 import com.huikezk.alarmpro.entity.AlarmHistoryEntity;
 import com.huikezk.alarmpro.utils.ActivityUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
+import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 
 import org.json.JSONObject;
@@ -86,7 +88,7 @@ public class AlarmActivity extends BaseActivity {
      */
     private void getAlarmHistory() {
         showLoadingAnim(this);
-        String url = MyApplication.IP + HttpsConts.ALARM_HISTORY + MyApplication.PROJECT_NUM;
+        String url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.ALARM_HISTORY + SaveUtils.getString(KeyUtils.PROJECT_NUM);
         MyUtils.Loge(TAG, "URL:" + url);
         StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
             @Override

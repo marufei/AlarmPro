@@ -26,7 +26,9 @@ import com.huikezk.alarmpro.entity.FanEntity;
 import com.huikezk.alarmpro.entity.LightEntity;
 import com.huikezk.alarmpro.entity.TableEntity;
 import com.huikezk.alarmpro.utils.ActivityUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
+import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 import com.huikezk.alarmpro.views.DialogTableView;
 
@@ -147,7 +149,7 @@ public class TableActivity extends BaseActivity implements View.OnClickListener 
 
     private void initData() {
         title = getIntent().getStringExtra("title");
-        sendName = MyApplication.PROJECT_SEND + title+"/";
+        sendName = SaveUtils.getString(KeyUtils.PROJECT_SEND) + title+"/";
         setTitle(title);
         adapter = new TableLvAdapter(this, sendName);
         table_lv.setAdapter(adapter);
@@ -171,7 +173,7 @@ public class TableActivity extends BaseActivity implements View.OnClickListener 
      * 获取电表
      */
     public void tableList() {
-        String url = MyApplication.IP + HttpsConts.GET_TABLE + MyApplication.PROJECT_NUM;
+        String url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.GET_TABLE + SaveUtils.getString(KeyUtils.PROJECT_NUM);
         MyUtils.Loge(TAG, "url::" + url);
         StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
             @Override
@@ -219,7 +221,7 @@ public class TableActivity extends BaseActivity implements View.OnClickListener 
      * 删除电表
      */
     private void delTable(final String deviceId) {
-        String url = MyApplication.IP + HttpsConts.DEL_TABLE + MyApplication.PROJECT_NUM;
+        String url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.DEL_TABLE + SaveUtils.getString(KeyUtils.PROJECT_NUM);
         MyUtils.Loge(TAG, "url::" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -260,7 +262,7 @@ public class TableActivity extends BaseActivity implements View.OnClickListener 
      * 添加电表
      */
     private void addTable(final String describe, final String deviceid, final String number) {
-        String url = MyApplication.IP + HttpsConts.ADD_TABLE + MyApplication.PROJECT_NUM;
+        String url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.ADD_TABLE +SaveUtils.getString(KeyUtils.PROJECT_NUM);
         MyUtils.Loge(TAG, "url::" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

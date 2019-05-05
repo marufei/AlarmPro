@@ -62,7 +62,7 @@ public class EditPwdActivity extends BaseActivity implements View.OnClickListene
     public void editPwd() {
         showLoadingAnim(this);
         String url = HttpsConts.BASE_URL + HttpsConts.EDIT_PWD
-                + "?userId=" + MyApplication.USER_ID
+                + "?userId=" + SaveUtils.getString(KeyUtils.USER_ID)
                 + "&password=" + edit_pwd_old.getText().toString().trim()
                 + "&newPassword=" + edit_pwd_new.getText().toString().trim();
         StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {

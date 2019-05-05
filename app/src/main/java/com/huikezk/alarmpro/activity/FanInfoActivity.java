@@ -12,7 +12,9 @@ import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.FanInfoLvAdapter;
 import com.huikezk.alarmpro.entity.FanEntity;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
+import com.huikezk.alarmpro.utils.SaveUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -93,7 +95,7 @@ public class FanInfoActivity extends BaseActivity {
         bean= (FanEntity.DataBean) getIntent().getSerializableExtra("bean");
         if (bean!=null&&!TextUtils.isEmpty(bean.getName())&&bean.getInfo()!=null){
             list.clear();
-            sendName= MyApplication.PROJECT_SEND+title+"/"+bean.getName()+"/";
+            sendName= SaveUtils.getString(KeyUtils.PROJECT_SEND)+title+"/"+bean.getName()+"/";
             setTitle(bean.getName());
             list.addAll(bean.getInfo());
             setViews( sendName,list);

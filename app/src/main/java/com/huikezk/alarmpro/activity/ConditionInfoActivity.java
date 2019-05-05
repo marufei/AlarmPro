@@ -16,7 +16,9 @@ import com.huikezk.alarmpro.adapter.ConditionItem5LvAdapter;
 import com.huikezk.alarmpro.adapter.ConditionItemLvAdapter;
 import com.huikezk.alarmpro.entity.ConditionEntity;
 import com.huikezk.alarmpro.service.IListener;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
+import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.views.DialogInputView;
 import com.huikezk.alarmpro.views.ListViewForScrollView;
 
@@ -121,7 +123,7 @@ public class ConditionInfoActivity extends BaseActivity{
     private void initData() {
         String title=getIntent().getStringExtra("title");
         String name = getIntent().getStringExtra("name");
-        sendName= MyApplication.PROJECT_SEND+title+"/"+name+"/";
+        sendName= SaveUtils.getString(KeyUtils.PROJECT_SEND)+title+"/"+name+"/";
         setTitle(name);
         lv1_adapter=new ConditionItemLvAdapter(this,sendName);
         condition_info_lv1.setAdapter(lv1_adapter);

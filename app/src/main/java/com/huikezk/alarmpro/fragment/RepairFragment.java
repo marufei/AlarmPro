@@ -20,6 +20,7 @@ import com.huikezk.alarmpro.entity.RepairEntity;
 import com.huikezk.alarmpro.service.IListener;
 import com.huikezk.alarmpro.service.ListenerManager;
 import com.huikezk.alarmpro.utils.JsonUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 
@@ -48,7 +49,9 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
     protected void lazyLoad() {
         list.clear();
         list.addAll(SaveUtils.getAllEndWithKey("repair"));
-        initData();
+        if (fragment_repair_null!=null) {
+            initData();
+        }
     }
 
     @Nullable
@@ -83,7 +86,7 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
         if (list != null && list.size() > 0) {
             List<String> proList = new ArrayList<>();
             for (String str : list) {
-                if (str.contains(MyApplication.PROJECT_NAME) && !TextUtils.isEmpty(SaveUtils.getString(str))) {
+                if (str.contains(SaveUtils.getString(KeyUtils.PROJECT_NAME)) && !TextUtils.isEmpty(SaveUtils.getString(str))) {
 //                    proList.add(str);
                     proList.add(SaveUtils.getString(str));
                 }

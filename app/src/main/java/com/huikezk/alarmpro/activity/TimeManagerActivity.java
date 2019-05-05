@@ -19,7 +19,9 @@ import com.huikezk.alarmpro.adapter.TimeManagerLvAdapter;
 import com.huikezk.alarmpro.entity.RepairRecordEntity;
 import com.huikezk.alarmpro.entity.TimeManagerEntity;
 import com.huikezk.alarmpro.utils.ActivityUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
+import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 
 import org.json.JSONObject;
@@ -79,7 +81,7 @@ public class TimeManagerActivity extends BaseActivity {
      */
     public void getTimeTable() {
         showLoadingAnim(this);
-        String url = MyApplication.IP + HttpsConts.TIME_TABLE + MyApplication.PROJECT_NUM;
+        String url = SaveUtils.getString(KeyUtils.PROJECT_IP)+ HttpsConts.TIME_TABLE + SaveUtils.getString(KeyUtils.PROJECT_NUM);
         MyUtils.Loge(TAG, "URL:" + url);
         StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
             @Override

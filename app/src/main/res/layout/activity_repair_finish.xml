@@ -32,9 +32,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:orientation="vertical"
-                android:paddingEnd="15dp"
-                android:paddingStart="15dp"
-                android:paddingTop="15dp">
+                android:padding="15dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -104,6 +102,11 @@
                     android:layout_marginBottom="10dp"
                     android:text="无"
                     android:textColor="@color/gray_9b" />
+                <com.huikezk.alarmpro.views.GridViewForScrollView
+                    android:id="@+id/repair_finish_grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:numColumns="3" />
 
             </LinearLayout>
 

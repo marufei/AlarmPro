@@ -26,7 +26,9 @@ import com.huikezk.alarmpro.adapter.TimeInfoLvAdapter;
 import com.huikezk.alarmpro.entity.TimeInfoEntity;
 import com.huikezk.alarmpro.entity.TimeManagerEntity;
 import com.huikezk.alarmpro.utils.ActivityUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
+import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 
 import org.json.JSONObject;
@@ -125,7 +127,7 @@ public class TimeInfoActivity extends BaseActivity implements View.OnClickListen
      */
     public void getTimeInfo() {
         showLoadingAnim(this);
-        String url = MyApplication.IP + HttpsConts.TIME_INFO + MyApplication.PROJECT_NUM;
+        String url = SaveUtils.getString(KeyUtils.PROJECT_IP)+ HttpsConts.TIME_INFO +SaveUtils.getString(KeyUtils.PROJECT_NUM);
         MyUtils.Loge(TAG, "URL:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -181,7 +183,7 @@ public class TimeInfoActivity extends BaseActivity implements View.OnClickListen
      */
     private void updateTimeTable(final List<TimeInfoEntity.DataBean> updateList) {
         showLoadingAnim(this);
-        String url = MyApplication.IP + HttpsConts.SET_TIME_TABLE + MyApplication.PROJECT_NUM;
+        String url = SaveUtils.getString(KeyUtils.PROJECT_IP)+ HttpsConts.SET_TIME_TABLE +SaveUtils.getString(KeyUtils.PROJECT_NUM);
         MyUtils.Loge(TAG, "URL:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

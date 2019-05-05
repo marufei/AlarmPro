@@ -26,9 +26,13 @@ import com.huikezk.alarmpro.activity.PartActivity;
 import com.huikezk.alarmpro.activity.TableActivity;
 import com.huikezk.alarmpro.activity.TimeManagerActivity;
 import com.huikezk.alarmpro.entity.BannerEntity;
+import com.huikezk.alarmpro.entity.UpdateEntity;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.GlideImageLoader;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
+import com.huikezk.alarmpro.utils.SaveUtils;
+import com.huikezk.alarmpro.utils.UpdateManger;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 import com.youth.banner.Banner;
 
@@ -56,7 +60,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     protected void lazyLoad() {
-
     }
 
     @Nullable
@@ -82,12 +85,15 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     private void initData() {
 
-        home_pro_name.setText(MyApplication.PROJECT_NAME);
-        if (MyApplication.projectList.length > 1) {
+        home_pro_name.setText(SaveUtils.getString(KeyUtils.PROJECT_NAME));
+        if (MyApplication.projectList!=null&&MyApplication.projectList.length > 1) {
             home_pro_change.setVisibility(View.VISIBLE);
         } else {
             home_pro_change.setVisibility(View.GONE);
         }
+
+
+
     }
 
     private void initViews() {
@@ -148,6 +154,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                MyUtils.Loge(TAG,"getBanner--------网络有问题");
                 MyUtils.showToast(getActivity(), "网络有问题");
             }
         });
@@ -166,9 +173,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             banner.start();
         }
 
-
-
     }
+
+
 
     @Override
     public void onClick(View v) {
@@ -253,7 +260,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     public boolean isHaveMoudle(String moudle) {
-        MyUtils.Loge(TAG, "模块：" + MyApplication.MOUDLE);
+//        MyUtils.Loge(TAG, "模块：" + MyApplication.MOUDLE);
         if (null != MyApplication.MOUDLE && MyApplication.MOUDLE.contains(moudle)) {
             return true;
         } else {

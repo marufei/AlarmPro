@@ -27,7 +27,9 @@ import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.RepairHistoryLvAdapter;
 import com.huikezk.alarmpro.entity.RepairRecordEntity;
 import com.huikezk.alarmpro.utils.ActivityUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
+import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 
 import org.json.JSONObject;
@@ -168,12 +170,12 @@ public class RepairHistoryActivity extends BaseActivity implements OnClickListen
         showLoadingAnim(this);
         String url;
         if (!TextUtils.isEmpty(repair_history_et_search.getText().toString())) {
-            url = MyApplication.IP + HttpsConts.REPAIR_HISTORY + MyApplication.PROJECT_NUM
+            url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.REPAIR_HISTORY + SaveUtils.getString(KeyUtils.PROJECT_NUM)
                     + "?startTime=" + startTime
                     + "&stopTime=" + endTime
                     + "&keyword=" + repair_history_et_search.getText().toString();
         } else {
-            url = MyApplication.IP + HttpsConts.REPAIR_HISTORY + MyApplication.PROJECT_NUM
+            url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.REPAIR_HISTORY + SaveUtils.getString(KeyUtils.PROJECT_NUM)
                     + "?startTime=" + startTime
                     + "&stopTime=" + endTime;
         }

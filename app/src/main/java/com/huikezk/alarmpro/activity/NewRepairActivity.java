@@ -32,9 +32,11 @@ import com.huikezk.alarmpro.entity.UploadEntity;
 import com.huikezk.alarmpro.service.IListener;
 import com.huikezk.alarmpro.service.ListenerManager;
 import com.huikezk.alarmpro.utils.ActivityUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.PicassoUtlis;
 import com.huikezk.alarmpro.utils.PictureUtil;
+import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.UploadUtil;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 import com.huikezk.alarmpro.views.GridViewForScrollView;
@@ -66,10 +68,10 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == MSG_DOWN_SUCCESS) {
-                urlList.add(MyApplication.IP.substring(0,MyApplication.IP.length()-1)+msg.obj);
+                urlList.add(SaveUtils.getString(KeyUtils.PROJECT_IP).substring(0,SaveUtils.getString(KeyUtils.PROJECT_IP).length()-1)+msg.obj);
             }
             if (msg.what==MSG_ALL_SUCCESS){
-                urlList.add(MyApplication.IP.substring(0,MyApplication.IP.length()-1)+msg.obj);
+                urlList.add(SaveUtils.getString(KeyUtils.PROJECT_IP).substring(0,SaveUtils.getString(KeyUtils.PROJECT_IP).length()-1)+msg.obj);
 //                adapter.setListData((ArrayList<String>) urlList);
 //                adapter.notifyDataSetChanged();
                 repair();
@@ -110,7 +112,7 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
      * 报修
      */
     public void repair() {
-        final String url = MyApplication.IP + HttpsConts.REPAIR + MyApplication.PROJECT_NUM;
+        final String url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.REPAIR + SaveUtils.getString(KeyUtils.PROJECT_NUM);
         MyUtils.Loge(TAG, "URL:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -141,11 +143,11 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<>();
-                if (!TextUtils.isEmpty(MyApplication.NICK_NAME)) {
-                    map.put("nickName", MyApplication.NICK_NAME);
+                if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.NICK_NAME))) {
+                    map.put("nickName", SaveUtils.getString(KeyUtils.NICK_NAME));
                 }
-                if (!TextUtils.isEmpty(MyApplication.USER_NAME)) {
-                    map.put("username", MyApplication.USER_NAME);
+                if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.USER_NAME))) {
+                    map.put("username", SaveUtils.getString(KeyUtils.USER_NAME));
                 }
                 if (!TextUtils.isEmpty(new_repair_content.getText().toString())) {
                     map.put("repairInfo", new_repair_content.getText().toString().trim());
@@ -209,7 +211,7 @@ public class NewRepairActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void run() {
                 super.run();
-                String url = MyApplication.IP + HttpsConts.UPDATE_FILE;
+                String url = SaveUtils.getString(KeyUtils.PROJECT_IP)+ HttpsConts.UPDATE_FILE;
                 MyUtils.Loge(TAG, "url:" + url);
                 Map<String, File> files = new HashMap<String, File>();
                 files.put("files", file);

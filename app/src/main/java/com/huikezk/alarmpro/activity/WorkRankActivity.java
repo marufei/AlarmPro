@@ -20,7 +20,9 @@ import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.WorkRankLvAdapter;
 import com.huikezk.alarmpro.entity.RepairHistoryEntity;
 import com.huikezk.alarmpro.utils.ActivityUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
+import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 import com.huikezk.alarmpro.views.DialogYearView;
 
@@ -83,7 +85,7 @@ public class WorkRankActivity extends BaseActivity implements View.OnClickListen
      */
     public void getRankList(final int year) {
         showLoadingAnim(this);
-        String url = MyApplication.IP + HttpsConts.WORK_RANK + MyApplication.PROJECT_NUM;
+        String url = SaveUtils.getString(KeyUtils.PROJECT_IP)+ HttpsConts.WORK_RANK + SaveUtils.getString(KeyUtils.PROJECT_NUM);
         MyUtils.Loge(TAG, "URL:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST,url, new Response.Listener<String>() {
             @Override

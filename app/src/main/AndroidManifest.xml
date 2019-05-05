@@ -11,18 +11,17 @@
     <!-- 调用相机权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <!--前台服务权限-->
+    <!-- 前台服务权限 -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    <!--WiFi权限-->
+    <!-- WiFi权限 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
 
     <application
@@ -84,13 +83,14 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!--阿里推送-->
+        <!-- 阿里推送 -->
         <meta-data
             android:name="com.alibaba.app.appkey"
             android:value="26018199" /> <!-- 请填写你自己的- appKey -->
         <meta-data
             android:name="com.alibaba.app.appsecret"
             android:value="cb7659e75080dcc0523b7a293e20a970" /> <!-- 请填写你自己的appSecret -->
+
 
         <!-- 消息接收监听器 （用户可自主扩展） -->
         <receiver
@@ -130,6 +130,10 @@
 
         <service android:name="net.igenius.mqttservice.MQTTService" />
 
+        <activity
+            android:name=".activity.PopupPushActivity"
+            android:exported="true" />
+        <activity android:name=".activity.IninMQttDataActivity"></activity>
     </application>
 
 </manifest>

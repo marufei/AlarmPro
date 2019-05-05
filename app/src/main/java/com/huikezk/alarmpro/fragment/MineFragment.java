@@ -37,6 +37,7 @@ import com.huikezk.alarmpro.activity.RepairHistoryActivity;
 import com.huikezk.alarmpro.activity.WorkRankActivity;
 import com.huikezk.alarmpro.entity.UploadEntity;
 import com.huikezk.alarmpro.utils.ActivityUtil;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.PictureUtil;
 import com.huikezk.alarmpro.utils.SaveUtils;
@@ -71,31 +72,31 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private static final int REQUEST_CODE = 0x03;
     private ArrayList<String> images = new ArrayList<>();
     private List<String> picList = new ArrayList<>();
-    private String picStr;
+    //    private String picStr;
     private String TAG = "MineFragment";
 
-    private Handler handler=new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
 //            headerUrl=MyApplication.IP+msg.obj;
-            if (msg.what==MSG_DOWN_SUCCESS){
-                RequestOptions options = new RequestOptions()
-                        .error(R.drawable.vector_drawable_circle)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .transform(new CircleCrop());
-                Glide.with(getActivity())
-                        .load(MyApplication.IP+msg.obj)
-                        .apply(options)
-                        .transition(new DrawableTransitionOptions()
-                                .crossFade())
-                        .into(mine_pic);
-                updateHeader(MyApplication.IP+msg.obj);
+            if (msg.what == MSG_DOWN_SUCCESS) {
+//                RequestOptions options = new RequestOptions()
+//                        .error(R.drawable.vector_drawable_circle)
+//                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                        .transform(new CircleCrop());
+//                Glide.with(getActivity())
+//                        .load(SaveUtils.getString(KeyUtils.PROJECT_IP)+msg.obj)
+//                        .apply(options)
+//                        .transition(new DrawableTransitionOptions()
+//                                .crossFade())
+//                        .into(mine_pic);
+                SaveUtils.setString(KeyUtils.PIC_URL, SaveUtils.getString(KeyUtils.PROJECT_IP) + msg.obj);
+                updateHeader(SaveUtils.getString(KeyUtils.PROJECT_IP) + msg.obj);
             }
         }
     };
-    private int MSG_DOWN_SUCCESS=1;
-    private String headerUrl;
+    private int MSG_DOWN_SUCCESS = 1;
 
     @Override
     protected void lazyLoad() {
@@ -118,16 +119,16 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initData() {
-        if (!TextUtils.isEmpty(MyApplication.NICK_NAME)) {
-            mine_name.setText(MyApplication.NICK_NAME);
+        if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.NICK_NAME))) {
+            mine_name.setText(SaveUtils.getString(KeyUtils.NICK_NAME));
         }
-        if (!TextUtils.isEmpty(MyApplication.PIC_URL)) {
+        if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.PIC_URL))) {
             RequestOptions options = new RequestOptions()
                     .error(R.drawable.vector_drawable_circle)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .transform(new CircleCrop());
             Glide.with(getActivity())
-                    .load(MyApplication.PIC_URL)
+                    .load(SaveUtils.getString(KeyUtils.PIC_URL))
                     .apply(options)
                     .transition(new DrawableTransitionOptions()
                             .crossFade())
@@ -240,11 +241,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
              */
             boolean isCameraImage = data.getBooleanExtra(ImageSelector.IS_CAMERA_IMAGE, false);
             if (images != null && images.size() > 0) {
-                picStr = PictureUtil.compressImage(images.get(0), ".png");
+//                picStr = PictureUtil.compressImage(images.get(0), ".png");
 //                updateHeader();
-                MyUtils.Loge(TAG,"files:"+images.get(0));
-                MyUtils.Loge(TAG,"files:"+new File(images.get(0)));
-                update(new File(images.get(0)),"file:///"+images.get(0));
+                MyUtils.Loge(TAG, "files:" + images.get(0));
+//                MyUtils.Loge(TAG,"files:"+new File(images.get(0)));
+                update(new File(images.get(0)), "file:///" + images.get(0));
             }
 
 
@@ -257,7 +258,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private void updateHeader(final String headerUrl) {
         String url = HttpsConts.BASE_URL + HttpsConts.UPDATE_HEADER;
         MyUtils.Loge(TAG, "URL:" + url);
-        MyUtils.Loge(TAG, "picHeader:" + picStr);
+        MyUtils.Loge(TAG, "headerUrl:" + headerUrl);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -266,13 +267,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     JSONObject jsonObject = new JSONObject(response);
                     String status = jsonObject.getString("status");
                     if (status.equals("1")) {
-                        if (images!=null&&!TextUtils.isEmpty(images.get(0))) {
+                        if (!TextUtils.isEmpty(headerUrl)) {
                             RequestOptions options = new RequestOptions()
                                     .error(R.drawable.vector_drawable_circle)
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .transform(new CircleCrop());
                             Glide.with(getActivity())
-                                    .load("file://" + images.get(0))
+                                    .load(headerUrl)
                                     .apply(options)
                                     .transition(new DrawableTransitionOptions()
                                             .crossFade())
@@ -297,7 +298,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<>();
-                map.put("userId", MyApplication.USER_ID);
+                map.put("userId", SaveUtils.getString(KeyUtils.USER_ID));
                 map.put("picHeader", headerUrl);
                 return map;
             }
@@ -308,6 +309,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
     /**
      * 上传头像
+     *
      * @param file
      * @param uri
      */
@@ -316,19 +318,19 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             @Override
             public void run() {
                 super.run();
-                String url = MyApplication.IP + HttpsConts.UPDATE_FILE;
-                MyUtils.Loge(TAG,"url:"+url);
+                String url = SaveUtils.getString(KeyUtils.PROJECT_IP) + HttpsConts.UPDATE_FILE;
+                MyUtils.Loge(TAG, "url:" + url);
                 Map<String, File> files = new HashMap<String, File>();
                 files.put("files", file);
                 try {
                     String request = UploadUtil.post(url, null, files);
                     MyUtils.Loge(TAG, "request:" + request);
-                    Gson gson=new Gson();
-                    UploadEntity uploadEntity=gson.fromJson(request,UploadEntity.class);
-                    if (uploadEntity!=null&&uploadEntity.getData()!=null&&uploadEntity.getData().size()>0){
+                    Gson gson = new Gson();
+                    UploadEntity uploadEntity = gson.fromJson(request, UploadEntity.class);
+                    if (uploadEntity != null && uploadEntity.getData() != null && uploadEntity.getData().size() > 0) {
                         Message msg = new Message();
                         msg.what = MSG_DOWN_SUCCESS;
-                        msg.obj=uploadEntity.getData().get(0);
+                        msg.obj = uploadEntity.getData().get(0);
                         handler.sendMessage(msg);
                     }
 

@@ -19,4 +19,37 @@ public class KeyUtils {
     public static String IMEI="imei";
     public static String TOPICS="topics";
     public static String MQTT_URL="url";
+
+    /**
+     * 头像url
+     */
+    public static String PIC_URL = "pic_url";
+
+
+    public static String USER_ID="user_id";
+
+    public static String NICK_NAME="nick_name";
+
+    public static String USER_NAME="user_name";
+
+    /**
+     * 当前项目名
+     */
+    public static String PROJECT_NAME="project_name";
+
+    /**
+     * 当前订阅消息
+     */
+    public static String PROJECT_SEND="project_send";
+
+    /**
+     * 项目编号
+     */
+    public static String PROJECT_NUM="project_num";
+
+    /**
+     * url基地址
+     */
+    public static String PROJECT_IP="ip";
+
 }

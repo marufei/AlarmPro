@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
+import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class AirInfoActivity extends BaseActivity {
         String part1 = getIntent().getStringExtra("part1");
         String part2 = getIntent().getStringExtra("part2");
         setTitle(part1 + " （" + part2 + "）");
-        sendName = MyApplication.PROJECT_SEND + title + "/" + part1 + "/" + part2 + "/";
+        sendName = SaveUtils.getString(KeyUtils.PROJECT_SEND) + title + "/" + part1 + "/" + part2 + "/";
         setView();
     }
 
