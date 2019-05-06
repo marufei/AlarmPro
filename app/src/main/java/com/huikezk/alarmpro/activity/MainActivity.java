@@ -13,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
+import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -82,6 +83,8 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
         MyApplication.getInstance().setPushSuccessListener(this);
         initView();
         initEvent();
+        String token=PushServiceFactory.getCloudPushService().getDeviceId();
+        updateUmengToken(token);
         initData();
         setPermission(permissions);
         getUpdateInfo();
@@ -257,6 +260,9 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
     }
 
     private void updateUmengToken(final String token) {
+        if (TextUtils.isEmpty(token)){
+            return;
+        }
         String url = HttpsConts.BASE_URL + HttpsConts.UMENG_TOKEN;
         MyUtils.Loge(TAG, "url::" + url);
         MyUtils.Loge(TAG, "USER_ID:" + SaveUtils.getString(KeyUtils.USER_ID));
