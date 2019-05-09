@@ -104,6 +104,7 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
             PushServiceFactory.getCloudPushService().bindPhoneNumber(SaveUtils.getString(KeyUtils.TEL), new CommonCallback() {
                 @Override
                 public void onSuccess(String s) {
+
                     MyUtils.Loge(TAG, "手机号：" + s + "绑定成功");
                 }
 
