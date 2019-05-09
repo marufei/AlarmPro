@@ -15,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
+import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -51,7 +52,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends CheckPermissionsActivity implements MyApplication.PushSuccessListener,
-        RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener,MyReceiver.OnMyReceiverListener {
+        RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener, MyReceiver.OnMyReceiverListener {
 
     private MyViewPager vp_show;
     private RadioButton rb0, rb1, rb2, rb3;
@@ -93,8 +94,25 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
         String token = PushServiceFactory.getCloudPushService().getDeviceId();
         updateUmengToken(token);
         initMQTT();
+        initSMSBind();
         setPermission(permissions);
         getUpdateInfo();
+    }
+
+    private void initSMSBind() {
+        if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.TEL))) {
+            PushServiceFactory.getCloudPushService().bindPhoneNumber(SaveUtils.getString(KeyUtils.TEL), new CommonCallback() {
+                @Override
+                public void onSuccess(String s) {
+                    MyUtils.Loge(TAG, "手机号：" + s + "绑定成功");
+                }
+
+                @Override
+                public void onFailed(String s, String s1) {
+                    MyUtils.Loge(TAG, "手机号绑定失败");
+                }
+            });
+        }
     }
 
     private void initData() {
@@ -200,21 +218,15 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
      */
     private void resetProject(String projectName) {
         List<LoginEntity.DataBean.ProjectNameBean> proList = MyApplication.loginEntity.getData().getProjectName();
-//        MyApplication.PROJECT_NAME = projectName;
         SaveUtils.setString(KeyUtils.PROJECT_NAME, projectName);
         for (int i = 0; i < proList.size(); i++) {
             if (proList.get(i).getProjectName().equals(projectName)) {
-//                MyApplication.PROJECT_NUM = proList.get(i).getProjectNum();
                 SaveUtils.setString(KeyUtils.PROJECT_NUM, String.valueOf(proList.get(i).getProjectNum()));
                 MyApplication.MOUDLE = proList.get(i).getModules();
             }
         }
-//        MyApplication.PROJECT_SEND = "/" + projectName + "/";
         SaveUtils.setString(KeyUtils.PROJECT_SEND, "/" + projectName + "/");
-//        MyUtils.Loge(TAG, "项目名：" + MyApplication.PROJECT_NAME + "--发送指令头："
-//                + MyApplication.PROJECT_SEND + "--项目号：" + MyApplication.PROJECT_NUM +
-//                "--模块：" + MyApplication.MOUDLE);
-        Intent intent=new Intent();
+        Intent intent = new Intent();
         intent.setAction("myReceiver");
         sendBroadcast(intent);
 
@@ -413,14 +425,14 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
 
     @Override
     public void onMyReceiver(Context context, Intent intent) {
-        MyUtils.Loge(TAG,"MAinActivity--收到广播");
+        MyUtils.Loge(TAG, "MAinActivity--收到广播");
         initData();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (myReceiver!=null) {
+        if (myReceiver != null) {
             unregisterReceiver(myReceiver);
         }
 
