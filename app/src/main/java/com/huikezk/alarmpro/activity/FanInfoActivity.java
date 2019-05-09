@@ -3,6 +3,7 @@ package com.huikezk.alarmpro.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.FanInfoLvAdapter;
 import com.huikezk.alarmpro.entity.FanEntity;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
@@ -20,13 +22,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FanInfoActivity extends BaseActivity {
+public class FanInfoActivity extends BaseActivity implements MyReceiver.OnMyReceiverListener{
 
     private FanEntity.DataBean bean;
     private ListView fan_info_lv;
     private FanInfoLvAdapter adapter;
     private String sendName;
     private List<String> list=new ArrayList<>();
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +40,7 @@ public class FanInfoActivity extends BaseActivity {
         initView();
         initData();
         initListener();
-
+        initReceiver();
 
     }
 
@@ -114,9 +117,26 @@ public class FanInfoActivity extends BaseActivity {
 
     }
 
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        registerReceiver(myReceiver, intentFilter);
+    }
+
     @Override
-    public void notifyAllActivity(String str) {
-        super.notifyAllActivity(str);
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG,"FanInfoActivity--收到广播");
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myReceiver!=null) {
+            unregisterReceiver(myReceiver);
+        }
+
     }
 }

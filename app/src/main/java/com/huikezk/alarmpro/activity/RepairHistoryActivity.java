@@ -2,6 +2,7 @@ package com.huikezk.alarmpro.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -26,6 +27,7 @@ import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.RepairHistoryLvAdapter;
 import com.huikezk.alarmpro.entity.RepairRecordEntity;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
@@ -41,7 +43,7 @@ import java.util.List;
 import cn.qqtheme.framework.picker.DatePicker;
 import cn.qqtheme.framework.util.ConvertUtils;
 
-public class RepairHistoryActivity extends BaseActivity implements OnClickListener {
+public class RepairHistoryActivity extends BaseActivity implements OnClickListener,MyReceiver.OnMyReceiverListener{
 
     private ListView repair_history_lv;
     private ImageButton myBack;
@@ -70,6 +72,7 @@ public class RepairHistoryActivity extends BaseActivity implements OnClickListen
     private String currentMonthStr;
     private String currentMonthDayStr;
     private Button repair_history_btn_search;
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +81,7 @@ public class RepairHistoryActivity extends BaseActivity implements OnClickListen
         initView();
         initData();
         initListener();
+        initReceiver();
     }
 
     private void initListener() {
@@ -309,9 +313,26 @@ public class RepairHistoryActivity extends BaseActivity implements OnClickListen
         endTime = currentYear + "-" + currentMonth + "-" + currentMonthDay;
     }
 
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        registerReceiver(myReceiver, intentFilter);
+    }
+
     @Override
-    public void notifyAllActivity(String str) {
-        super.notifyAllActivity(str);
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG,"RepairHistoryActivity--收到广播");
         getRepairHistory();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myReceiver!=null) {
+            unregisterReceiver(myReceiver);
+        }
+
     }
 }

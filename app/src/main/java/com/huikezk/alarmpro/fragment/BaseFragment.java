@@ -1,8 +1,5 @@
 package com.huikezk.alarmpro.fragment;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,14 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.huikezk.alarmpro.service.IListener;
-import com.huikezk.alarmpro.service.ListenerManager;
-
 
 /**
  * Created by Administrator on 2016-08-15.
  */
-public abstract class BaseFragment extends Fragment implements IListener{
+public abstract class BaseFragment extends Fragment {
     /**
      * Fragment当前状态是否可见
      */
@@ -28,7 +22,6 @@ public abstract class BaseFragment extends Fragment implements IListener{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ListenerManager.getInstance().registerListtener(this);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -97,10 +90,6 @@ public abstract class BaseFragment extends Fragment implements IListener{
 
     }
 
-    @Override
-    public void notifyAllActivity(String str) {
-
-    }
 
 //    protected void revicedCast() {
 //

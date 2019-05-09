@@ -16,10 +16,9 @@ import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.alibaba.sdk.android.push.register.HuaWeiRegister;
 import com.alibaba.sdk.android.push.register.MiPushRegister;
-import com.huikezk.alarmpro.activity.SplashActivity;
 import com.huikezk.alarmpro.entity.LoginEntity;
-import com.huikezk.alarmpro.service.ListenerManager;
 import com.huikezk.alarmpro.utils.KeyUtils;
+import com.huikezk.alarmpro.utils.MyActivityManager;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 
@@ -90,6 +89,7 @@ public class MyApplication extends Application {
      * 当前栈顶的activity
      */
     private Activity currentActivity;
+    private Intent intent;
 
     public void setPushSuccessListener(PushSuccessListener pushSuccessListener) {
         this.pushSuccessListener = pushSuccessListener;
@@ -131,7 +131,7 @@ public class MyApplication extends Application {
             MyUtils.Loge("lbw", "===onMessageArrived:" + topic + " " + new String(payload));
             SaveUtils.setString(topic, new String(payload));
             SaveUtils.removeManyData();
-            ListenerManager.getInstance().sendBroadCast("com.huikezk.alarmpro.activity.BaseActivity");
+            sendBroadcast(intent);
         }
 
         @Override
@@ -172,10 +172,12 @@ public class MyApplication extends Application {
         super.onCreate();
         mInstance = this;
         MQTTService.NAMESPACE = "com.huikezk.alarmpro";
-//        registerActivityCallbacks();
+        registerActivityCallbacks();
         NotificationChannel();
         initCloudChannel(this);
         receiver.register(getApplicationContext());
+        intent=new Intent();
+        intent.setAction("myReceiver");
 
     }
 
@@ -203,7 +205,7 @@ public class MyApplication extends Application {
         });
 
         // 注册方法会自动判断是否支持小米系统推送，如不支持会跳过注册。
-        MiPushRegister.register(applicationContext, "2882303761517956329", "5811795650329");
+        MiPushRegister.register(applicationContext, "2882303761517956329", "5571795632329");
         // 注册方法会自动判断是否支持华为系统推送，如不支持会跳过注册。
         HuaWeiRegister.register(applicationContext);
         //GCM/FCM辅助通道注册
@@ -345,77 +347,48 @@ public class MyApplication extends Application {
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                currentActivity = activity;
-                MyUtils.Loge(TAG, "onActivityCreated--currentActivity:" + currentActivity.toString());
+
+//                MyUtils.Loge(TAG, "onActivityCreated--currentActivity:" + currentActivity.toString());
 
             }
 
             @Override
             public void onActivityStarted(final Activity activity) {
-//                //等于0时就是从后台或者打开app  这里SplashActivity就是你的启动页面如果不是启动页面就是后台进来的
-//                MyUtils.Loge(TAG, "onActivityStarted---------activityCount:" + activityCount + "--firstTime:" + firstTime + "--lastTime:" + lastTime);
-//                if (0 == activityCount && !(activity instanceof SplashActivity)) {
-//                    firstTime = System.currentTimeMillis();
-//                    if ((firstTime - lastTime) > (2 * 60 * 1000)) {
-//                        //超过2分钟在后台就进入解锁页面
-//                        Intent intent = new Intent(getApplicationContext(), SplashActivity.class);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        startActivity(intent);
-//                        finishAllActivity();
-//                        receiver.unregister(getApplicationContext());
-//                    }
-//                }else {
-//                    receiver.register(getApplicationContext());
-//                }
-//                activityCount++;
-                currentActivity = activity;
-                MyUtils.Loge(TAG, "onActivityStarted--currentActivity:" + currentActivity.toString());
+
+//                MyUtils.Loge(TAG, "onActivityStarted--currentActivity:" + currentActivity.toString());
             }
 
             @Override
             public void onActivityResumed(Activity activity) {
-                currentActivity = activity;
-                MyUtils.Loge(TAG, "onActivityResumed--currentActivity:" + currentActivity.toString());
+
+                MyActivityManager.getInstance().setCurrentActivity(activity);
+//                MyUtils.Loge(TAG, "onActivityResumed--currentActivity:" + currentActivity.toString());
 
             }
 
             @Override
             public void onActivityPaused(Activity activity) {
-                currentActivity = activity;
-                MyUtils.Loge(TAG, "onActivityPaused--currentActivity:" + currentActivity.toString());
+
+//                MyUtils.Loge(TAG, "onActivityPaused--currentActivity:" + currentActivity.toString());
 
             }
 
             @Override
             public void onActivityStopped(Activity activity) {
-//                activityCount--;
-//                MyUtils.Loge(TAG, "onActivityStopped-----activityCount:" + activityCount + "--firstTime:" + firstTime + "--lastTime:" + lastTime);
-//                if (0 == activityCount) {
-//                    lastTime = System.currentTimeMillis();//等于0时 就是从后台进来的
-//                    if (lastTime == 0) {
-//                        Intent intent = new Intent(getApplicationContext(), SplashActivity.class);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        startActivity(intent);
-//                        finishAllActivity();
-//                        receiver.unregister(getApplicationContext());
-//                    }
-//                }else {
-//                    receiver.register(getApplicationContext());
-//                }
-                currentActivity = activity;
-                MyUtils.Loge(TAG, "onActivityStopped--currentActivity:" + currentActivity.toString());
+
+//                MyUtils.Loge(TAG, "onActivityStopped--currentActivity:" + currentActivity.toString());
             }
 
             @Override
             public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-                currentActivity = activity;
-                MyUtils.Loge(TAG, "onActivitySaveInstanceState--currentActivity:" + currentActivity.toString());
+
+//                MyUtils.Loge(TAG, "onActivitySaveInstanceState--currentActivity:" + currentActivity.toString());
             }
 
             @Override
             public void onActivityDestroyed(Activity activity) {
-                currentActivity = activity;
-                MyUtils.Loge(TAG, "onActivityDestroyed--currentActivity:" + currentActivity.toString());
+
+//                MyUtils.Loge(TAG, "onActivityDestroyed--currentActivity:" + currentActivity.toString());
             }
         });
     }

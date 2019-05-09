@@ -33,13 +33,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
         tools:replace="android:allowBackup">
-        <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.EditPwdActivity" />
-        <activity android:name=".activity.NewRepairActivity" />
+        <activity
+            android:name=".activity.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.EditPwdActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.NewRepairActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SplashActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/StartAppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,9 +56,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.RepairHistoryActivity" />
-        <activity android:name=".activity.WorkRankActivity" />
-        <activity android:name=".activity.RepairInfoActivity" />
+        <activity
+            android:name=".activity.RepairHistoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.WorkRankActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.RepairInfoActivity"
+            android:screenOrientation="portrait" />
 
         <!-- //图片选择Activity -->
         <!-- //横竖屏切换处理。 -->
@@ -107,33 +122,65 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.TimeManagerActivity" />
-        <activity android:name=".activity.TimeInfoActivity" />
-        <activity android:name=".activity.AlarmActivity" />
-        <activity android:name=".activity.AlarmHistoryActivity" />
-        <activity android:name=".activity.PartActivity" />
-        <activity android:name=".activity.PartInfoActivity" />
-        <activity android:name=".activity.ConditionActivity" />
-        <activity android:name=".activity.ConditionInfoActivity" />
-        <activity android:name=".activity.AirActivity" />
+        <activity
+            android:name=".activity.TimeManagerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.TimeInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AlarmActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AlarmHistoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.PartActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.PartInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ConditionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ConditionInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AirActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.AirInfoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
-            android:launchMode="singleTop" />
-        <activity android:name=".activity.FanActivity" />
-        <activity android:name=".activity.FanInfoActivity" />
-        <activity android:name=".activity.LightActivity" />
-        <activity android:name=".activity.LightInfoActivity" />
-        <activity android:name=".activity.RepairFinishActivity" />
-        <activity android:name=".activity.TableActivity" />
-        <activity android:name=".activity.ChangeProActivity" />
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.FanActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.FanInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.LightActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.LightInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.RepairFinishActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.TableActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ChangeProActivity"
+            android:screenOrientation="portrait" />
 
         <service android:name="net.igenius.mqttservice.MQTTService" />
 
         <activity
             android:name=".activity.PopupPushActivity"
-            android:exported="true" />
-        <activity android:name=".activity.IninMQttDataActivity"></activity>
+            android:exported="true"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

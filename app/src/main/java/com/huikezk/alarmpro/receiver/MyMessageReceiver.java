@@ -3,15 +3,12 @@ package com.huikezk.alarmpro.receiver;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.alibaba.sdk.android.push.MessageReceiver;
 import com.alibaba.sdk.android.push.notification.CPushMessage;
 import com.google.gson.Gson;
-import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.activity.MainActivity;
 import com.huikezk.alarmpro.entity.NotifyBean;
-import com.huikezk.alarmpro.service.ListenerManager;
 import com.huikezk.alarmpro.utils.MyUtils;
 
 import java.util.Map;

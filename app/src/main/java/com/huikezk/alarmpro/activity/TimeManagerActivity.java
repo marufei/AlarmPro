@@ -2,6 +2,7 @@ package com.huikezk.alarmpro.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.TimeManagerLvAdapter;
 import com.huikezk.alarmpro.entity.RepairRecordEntity;
 import com.huikezk.alarmpro.entity.TimeManagerEntity;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
@@ -29,13 +31,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimeManagerActivity extends BaseActivity {
+public class TimeManagerActivity extends BaseActivity implements MyReceiver.OnMyReceiverListener {
 
     private ListView time_manager_lv;
     private String TAG = "TimeManagerActivity";
     private TimeManagerLvAdapter adapter;
     private List<TimeManagerEntity.DataBean> list=new ArrayList<>();
     private TextView time_manager_null;
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,7 @@ public class TimeManagerActivity extends BaseActivity {
         initView();
         initData();
         initListener();
+        initReceiver();
     }
 
     private void initListener() {
@@ -126,9 +130,26 @@ public class TimeManagerActivity extends BaseActivity {
         VolleyUtils.getInstance(TimeManagerActivity.this).addToRequestQueue(stringRequest);
     }
 
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        registerReceiver(myReceiver, intentFilter);
+    }
+
     @Override
-    public void notifyAllActivity(String str) {
-        super.notifyAllActivity(str);
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG,"TimeManagerActivity--收到广播");
         getTimeTable();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myReceiver!=null) {
+            unregisterReceiver(myReceiver);
+        }
+
     }
 }

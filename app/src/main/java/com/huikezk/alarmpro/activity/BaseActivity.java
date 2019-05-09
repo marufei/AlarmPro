@@ -25,8 +25,7 @@ import android.widget.TextView;
 
 import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
-import com.huikezk.alarmpro.service.IListener;
-import com.huikezk.alarmpro.service.ListenerManager;
+import com.huikezk.alarmpro.utils.MyActivityManager;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.OSHelper;
 import com.huikezk.alarmpro.utils.ToolUtils;
@@ -47,7 +46,7 @@ import static com.huikezk.alarmpro.MyApplication.AppExit;
  * Phone：132 1358 0912
  * Purpose:公共
  */
-public class BaseActivity extends AppCompatActivity implements IListener {
+public class BaseActivity extends AppCompatActivity{
     public static final String TAG = "BaseActivity";
     public static TextView MENU;
 
@@ -59,7 +58,6 @@ public class BaseActivity extends AppCompatActivity implements IListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ListenerManager.getInstance().registerListtener(this);
         //把状态栏设置为透明
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -489,15 +487,9 @@ public class BaseActivity extends AppCompatActivity implements IListener {
         }
     }
 
-
-    /**
-     * 收到广播回调
-     *
-     * @param str
-     */
-    @Override
-    public void notifyAllActivity(String str) {
-//        MyUtils.Loge(TAG, "BaseActivity收到广播");
-
+    public Activity getCurrentActivity(){
+        return MyActivityManager.getInstance().getCurrentActivity();
     }
+
+
 }

@@ -111,11 +111,7 @@ public class SplashActivity extends BaseActivity {
                             if (loginEntity != null && loginEntity.getData() != null) {
                                 MyApplication.loginEntity = loginEntity;
                                 setSP(loginEntity.getData());
-                                if (MyApplication.myConnected){
-                                    MainActivity.start(SplashActivity.this);
-                                }else {
-                                    IninMQttDataActivity.start(SplashActivity.this);
-                                }
+                                MainActivity.start(SplashActivity.this);
                                 finish();
                             }
                         }
@@ -140,17 +136,10 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void setSP(LoginEntity.DataBean data) {
-//        MyApplication.USER_ID = data.get_id();
-//        MyApplication.NICK_NAME = data.getNickName();
-//        MyApplication.USER_NAME = data.getUsername();
         SaveUtils.setString(KeyUtils.USER_ID, data.get_id());
         SaveUtils.setString(KeyUtils.NICK_NAME, data.getNickName());
         SaveUtils.setString(KeyUtils.USER_NAME, data.getUsername());
         if (data.getProjectName() != null && data.getProjectName().size() > 0) {
-            //默认选取第一个项目
-//            MyApplication.PROJECT_NAME = data.getProjectName().get(0).getProjectName();
-//            MyApplication.PROJECT_SEND = "/" + data.getProjectName().get(0).getProjectName() + "/";
-//            MyApplication.PROJECT_NUM = data.getProjectName().get(0).getProjectNum();
             SaveUtils.setString(KeyUtils.PROJECT_NAME,data.getProjectName().get(0).getProjectName());
             SaveUtils.setString(KeyUtils.PROJECT_SEND,"/" + data.getProjectName().get(0).getProjectName() + "/");
             SaveUtils.setString(KeyUtils.PROJECT_NUM,String.valueOf(data.getProjectName().get(0).getProjectNum()));
@@ -170,21 +159,10 @@ public class SplashActivity extends BaseActivity {
             MyApplication.projectList = projectList;
             MyApplication.MOUDLE = data.getProjectName().get(0).getModules();
         }
-//        MyApplication.PIC_URL = data.getImage();
-//        MyApplication.IP = data.getIp();
         SaveUtils.setString(KeyUtils.PROJECT_IP,data.getIp());
         SaveUtils.setString(KeyUtils.TEL, data.getUsername());
         SaveUtils.setString(KeyUtils.PWD, data.getPassword());
         SaveUtils.setString(KeyUtils.PIC_URL, data.getImage());
-//        if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.MQTT_URL))) {
-//            MyUtils.Loge(TAG, "clientId：" + Build.SERIAL);
-////            MQTTService.NAMESPACE = BuildConfig.APPLICATION_ID;
-//            MQTTServiceCommand.connect(getApplicationContext(),
-//                    "tcp://" + SaveUtils.getString(KeyUtils.MQTT_URL),
-//                    Build.SERIAL,
-//                    "admin",
-//                    "123456");
-//        }
 
     }
 

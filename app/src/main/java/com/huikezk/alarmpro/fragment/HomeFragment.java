@@ -1,6 +1,8 @@
 package com.huikezk.alarmpro.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -27,6 +29,7 @@ import com.huikezk.alarmpro.activity.TableActivity;
 import com.huikezk.alarmpro.activity.TimeManagerActivity;
 import com.huikezk.alarmpro.entity.BannerEntity;
 import com.huikezk.alarmpro.entity.UpdateEntity;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.GlideImageLoader;
 import com.huikezk.alarmpro.utils.KeyUtils;
@@ -50,13 +53,14 @@ import static android.app.Activity.RESULT_OK;
  * Purpose:TODO
  * update：
  */
-public class HomeFragment extends BaseFragment implements View.OnClickListener {
+public class HomeFragment extends BaseFragment implements View.OnClickListener, MyReceiver.OnMyReceiverListener {
     private View view;
     private LinearLayout home_part1, home_part2, home_part3, home_part4,
             home_part5, home_part6, home_part7, home_part8, home_part9;
     private TextView home_pro_name, home_pro_change;
     private static final int PRO_CHANGE = 0x004;
     private Banner banner;
+    private MyReceiver myReceiver;
 
     @Override
     protected void lazyLoad() {
@@ -70,6 +74,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         initViews();
         getBanner();
         initListener();
+        initReceiver();
         return view;
     }
 
@@ -86,12 +91,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private void initData() {
 
         home_pro_name.setText(SaveUtils.getString(KeyUtils.PROJECT_NAME));
-        if (MyApplication.projectList!=null&&MyApplication.projectList.length > 1) {
+        if (MyApplication.projectList != null && MyApplication.projectList.length > 1) {
             home_pro_change.setVisibility(View.VISIBLE);
         } else {
             home_pro_change.setVisibility(View.GONE);
         }
-
 
 
     }
@@ -154,7 +158,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                MyUtils.Loge(TAG,"getBanner--------网络有问题");
+                MyUtils.Loge(TAG, "getBanner--------网络有问题");
                 MyUtils.showToast(getActivity(), "网络有问题");
             }
         });
@@ -174,7 +178,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
 
     }
-
 
 
     @Override
@@ -268,8 +271,25 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        getActivity().registerReceiver(myReceiver, intentFilter);
+    }
+
     @Override
-    public void notifyAllActivity(String str) {
-        super.notifyAllActivity(str);
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG, "HomeFragment--收到广播");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (myReceiver != null) {
+            getActivity().unregisterReceiver(myReceiver);
+        }
+
     }
 }

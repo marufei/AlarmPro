@@ -1,5 +1,8 @@
 package com.huikezk.alarmpro.fragment;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -38,6 +41,7 @@ import com.huikezk.alarmpro.entity.ConditionEntity;
 import com.huikezk.alarmpro.entity.FanEntity;
 import com.huikezk.alarmpro.entity.LightEntity;
 import com.huikezk.alarmpro.entity.ProjectInfoEntity;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
@@ -60,7 +64,7 @@ import java.util.Map;
  * Purpose:TODO
  * update：
  */
-public class NewsFragment extends BaseFragment implements View.OnClickListener {
+public class NewsFragment extends BaseFragment implements View.OnClickListener, MyReceiver.OnMyReceiverListener {
     private View view;
     private String TAG = "NewsFragment";
     private ListView fragment_news_lv;
@@ -69,12 +73,14 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener {
     private TextView news_null;
     private List<String> list;
     private AlarmEntity alarmEntity;
+    private MyReceiver myReceiver;
 
     @Override
     protected void lazyLoad() {
         list = SaveUtils.getAllEndWithKey("alarm");
-        if (news_null!=null) {
+        if (news_null != null) {
             initData();
+            initReceiver();
         }
     }
 
@@ -150,19 +156,19 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener {
 
     private void initData() {
         if (list != null && list.size() > 0) {
-            List<String> proList=new ArrayList<>();
-            for (String str:list){
-                if (str.contains(SaveUtils.getString(KeyUtils.PROJECT_NAME))){
+            List<String> proList = new ArrayList<>();
+            for (String str : list) {
+                if (str.contains(SaveUtils.getString(KeyUtils.PROJECT_NAME))) {
                     proList.add(str);
                 }
             }
-            if (proList.size()>0) {
+            if (proList.size() > 0) {
                 news_null.setVisibility(View.GONE);
                 fragment_news_lv.setVisibility(View.VISIBLE);
                 Collections.sort(proList);
                 adapter.setListData(proList);
                 adapter.notifyDataSetChanged();
-            }else {
+            } else {
                 news_null.setVisibility(View.VISIBLE);
                 fragment_news_lv.setVisibility(View.GONE);
             }
@@ -304,10 +310,26 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        getActivity().registerReceiver(myReceiver, intentFilter);
+    }
+
     @Override
-    public void notifyAllActivity(String str) {
-        list = SaveUtils.getAllEndWithKey("alarm");
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG, "HomeFragment--收到广播");
         initData();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (myReceiver != null) {
+            getActivity().unregisterReceiver(myReceiver);
+        }
 
     }
 }

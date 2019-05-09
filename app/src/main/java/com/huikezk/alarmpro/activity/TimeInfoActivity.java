@@ -2,6 +2,7 @@ package com.huikezk.alarmpro.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.TimeInfoLvAdapter;
 import com.huikezk.alarmpro.entity.TimeInfoEntity;
 import com.huikezk.alarmpro.entity.TimeManagerEntity;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
@@ -45,7 +47,7 @@ import cn.qqtheme.framework.picker.OptionPicker;
 import cn.qqtheme.framework.picker.TimePicker;
 import cn.qqtheme.framework.util.ConvertUtils;
 
-public class TimeInfoActivity extends BaseActivity implements View.OnClickListener {
+public class TimeInfoActivity extends BaseActivity implements View.OnClickListener,MyReceiver.OnMyReceiverListener {
 
     private ListView time_info_lv;
     private TextView time_info_title;
@@ -56,6 +58,7 @@ public class TimeInfoActivity extends BaseActivity implements View.OnClickListen
     private String TAG = "TimeInfoActivity";
     private TimeInfoLvAdapter adapter;
     private List<TimeInfoEntity.DataBean> listData = new ArrayList<>();
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,7 @@ public class TimeInfoActivity extends BaseActivity implements View.OnClickListen
         initView();
         initData();
         initListener();
+        initReceiver();
     }
 
     private void initListener() {
@@ -259,9 +263,26 @@ public class TimeInfoActivity extends BaseActivity implements View.OnClickListen
         picker.show();
     }
 
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        registerReceiver(myReceiver, intentFilter);
+    }
+
     @Override
-    public void notifyAllActivity(String str) {
-        super.notifyAllActivity(str);
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG,"TimeInfoActivity--收到广播");
         getTimeInfo();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myReceiver!=null) {
+            unregisterReceiver(myReceiver);
+        }
+
     }
 }

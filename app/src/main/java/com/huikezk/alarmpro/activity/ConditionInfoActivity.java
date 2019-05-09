@@ -3,11 +3,9 @@ package com.huikezk.alarmpro.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.widget.ListView;
 
-import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.ConditionItem2LvAdapter;
 import com.huikezk.alarmpro.adapter.ConditionItem3LvAdapter;
@@ -15,7 +13,7 @@ import com.huikezk.alarmpro.adapter.ConditionItem4LvAdapter;
 import com.huikezk.alarmpro.adapter.ConditionItem5LvAdapter;
 import com.huikezk.alarmpro.adapter.ConditionItemLvAdapter;
 import com.huikezk.alarmpro.entity.ConditionEntity;
-import com.huikezk.alarmpro.service.IListener;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
@@ -25,7 +23,7 @@ import com.huikezk.alarmpro.views.ListViewForScrollView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConditionInfoActivity extends BaseActivity{
+public class ConditionInfoActivity extends BaseActivity implements MyReceiver.OnMyReceiverListener{
 
     private ListViewForScrollView condition_info_lv1, condition_info_lv2, condition_info_lv3, condition_info_lv4, condition_info_lv5;
     private ConditionEntity.DataBean.InfoBean infoBean;
@@ -41,6 +39,7 @@ public class ConditionInfoActivity extends BaseActivity{
     private ConditionItem4LvAdapter lv4_adapter;
     private ConditionItem5LvAdapter lv5_adapter;
     private DialogInputView dialogInputView;
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +50,7 @@ public class ConditionInfoActivity extends BaseActivity{
         initView();
         initData();
         initListener();
+        initReceiver();
     }
 
     private void initListener() {
@@ -195,13 +195,32 @@ public class ConditionInfoActivity extends BaseActivity{
         context.startActivity(intent);
     }
 
+
+
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        registerReceiver(myReceiver, intentFilter);
+    }
+
     @Override
-    public void notifyAllActivity(String str) {
-        super.notifyAllActivity(str);
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG,"ConditionInfoActivity--收到广播");
         lv1_adapter.notifyDataSetChanged();
         lv2_adapter.notifyDataSetChanged();
         lv3_adapter.notifyDataSetChanged();
         lv4_adapter.notifyDataSetChanged();
         lv5_adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myReceiver!=null) {
+            unregisterReceiver(myReceiver);
+        }
+
     }
 }

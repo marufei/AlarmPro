@@ -16,25 +16,16 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestOptions;
 import com.donkingliang.imageselector.utils.ImageSelector;
 import com.donkingliang.imageselector.utils.ImageSelectorUtils;
 import com.google.gson.Gson;
 import com.huikezk.alarmpro.HttpsAddress.HttpsConts;
-import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.RepairGvAdapter;
 import com.huikezk.alarmpro.entity.UploadEntity;
-import com.huikezk.alarmpro.service.IListener;
-import com.huikezk.alarmpro.service.ListenerManager;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
-import com.huikezk.alarmpro.utils.PicassoUtlis;
 import com.huikezk.alarmpro.utils.PictureUtil;
 import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.UploadUtil;
@@ -50,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NewRepairActivity extends BaseActivity implements View.OnClickListener, IListener {
+public class NewRepairActivity extends BaseActivity implements View.OnClickListener {
 
     private String TAG = "NewRepairActivity";
     private EditText new_repair_content;

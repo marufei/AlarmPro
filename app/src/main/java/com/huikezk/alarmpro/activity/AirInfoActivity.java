@@ -2,21 +2,25 @@ package com.huikezk.alarmpro.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.widget.TextView;
 
 import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.KeyUtils;
+import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 
 import java.util.List;
 
-public class AirInfoActivity extends BaseActivity {
+public class AirInfoActivity extends BaseActivity implements MyReceiver.OnMyReceiverListener {
 
     private TextView air_info_arg1, air_info_arg2, air_info_arg3, air_info_arg4;
     private String sendName;
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,7 @@ public class AirInfoActivity extends BaseActivity {
         ToolBarStyle(1);
         initView();
         initData();
+        initReceiver();
     }
 
     @Override
@@ -90,9 +95,27 @@ public class AirInfoActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
+
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        registerReceiver(myReceiver, intentFilter);
+    }
+
     @Override
-    public void notifyAllActivity(String str) {
-        super.notifyAllActivity(str);
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG,"AirInfoActivity--收到广播");
         setView();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myReceiver!=null) {
+            unregisterReceiver(myReceiver);
+        }
+
     }
 }

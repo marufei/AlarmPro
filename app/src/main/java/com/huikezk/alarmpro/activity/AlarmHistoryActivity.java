@@ -2,6 +2,7 @@ package com.huikezk.alarmpro.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.huikezk.alarmpro.adapter.AlarmRecordLvAdapter;
 import com.huikezk.alarmpro.entity.AlarmHistoryEntity;
 import com.huikezk.alarmpro.entity.AlarmRecordEntity;
 import com.huikezk.alarmpro.entity.BaseEntity;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
@@ -40,7 +42,7 @@ import java.util.Map;
 
 import cn.qqtheme.framework.util.ConvertUtils;
 
-public class AlarmHistoryActivity extends BaseActivity implements View.OnClickListener{
+public class AlarmHistoryActivity extends BaseActivity implements View.OnClickListener,MyReceiver.OnMyReceiverListener{
 
     private ImageView alarm_history_back;
     private TextView alarm_history_title;
@@ -69,6 +71,7 @@ public class AlarmHistoryActivity extends BaseActivity implements View.OnClickLi
     private String currentMonthDayStr;
     private List<AlarmRecordEntity.DataBean> listData=new ArrayList<>();
     private AlarmRecordLvAdapter adapter;
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,7 @@ public class AlarmHistoryActivity extends BaseActivity implements View.OnClickLi
         setContentView(R.layout.activity_alarm_history);
         initView();
         initData();
+        initReceiver();
     }
 
     public static void start(Context context,String type,String info) {
@@ -270,9 +274,27 @@ public class AlarmHistoryActivity extends BaseActivity implements View.OnClickLi
         endTime = currentYear + "-" + currentMonth + "-" + currentMonthDay;
     }
 
+
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        registerReceiver(myReceiver, intentFilter);
+    }
+
     @Override
-    public void notifyAllActivity(String str) {
-        super.notifyAllActivity(str);
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG,"AlarmHistoryActivity--收到广播");
         getAlarmHistory();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myReceiver!=null) {
+            unregisterReceiver(myReceiver);
+        }
+
     }
 }

@@ -1,24 +1,24 @@
 package com.huikezk.alarmpro.fragment;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.activity.NewRepairActivity;
 import com.huikezk.alarmpro.activity.RepairFinishActivity;
 import com.huikezk.alarmpro.adapter.RepairLvAdapter;
 import com.huikezk.alarmpro.entity.RepairEntity;
-import com.huikezk.alarmpro.service.IListener;
-import com.huikezk.alarmpro.service.ListenerManager;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.JsonUtil;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
@@ -36,7 +36,7 @@ import java.util.List;
  * Purpose:TODO
  * update：
  */
-public class RepairFragment extends BaseFragment implements View.OnClickListener, IListener {
+public class RepairFragment extends BaseFragment implements View.OnClickListener,MyReceiver.OnMyReceiverListener {
     private View view;
     private TextView repair_create;
     private ListView fragment_repair_lv;
@@ -44,6 +44,7 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
     private List<String> list=new ArrayList<>();
     private List<RepairEntity> listData;
     private TextView fragment_repair_null;
+    private MyReceiver myReceiver;
 
     @Override
     protected void lazyLoad() {
@@ -51,6 +52,7 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
         list.addAll(SaveUtils.getAllEndWithKey("repair"));
         if (fragment_repair_null!=null) {
             initData();
+            initReceiver();
         }
     }
 
@@ -127,11 +129,28 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
         }
     }
 
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        getActivity().registerReceiver(myReceiver, intentFilter);
+    }
+
     @Override
-    public void notifyAllActivity(String str) {
-//        MyUtils.Loge(TAG,"收到广播："+str);
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG, "HomeFragment--收到广播");
         list.clear();
         list.addAll(SaveUtils.getAllEndWithKey("repair"));
         initData();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (myReceiver != null) {
+            getActivity().unregisterReceiver(myReceiver);
+        }
+
     }
 }

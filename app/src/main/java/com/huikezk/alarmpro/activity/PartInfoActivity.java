@@ -2,6 +2,7 @@ package com.huikezk.alarmpro.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,12 +11,14 @@ import android.widget.TextView;
 
 import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.KeyUtils;
+import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 
 import java.util.List;
 
-public class PartInfoActivity extends BaseActivity {
+public class PartInfoActivity extends BaseActivity implements MyReceiver.OnMyReceiverListener {
 
     private String title;
     private TextView part_info_name1, part_info_name2, part_info_name3, part_info_name4, part_info_name5,
@@ -25,6 +28,7 @@ public class PartInfoActivity extends BaseActivity {
     private String sendOrder;
     private static final String OUT_LINE = "离线";
     private static final String ALARM = "报警";
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,7 @@ public class PartInfoActivity extends BaseActivity {
         ToolBarStyle(1);
         initView();
         initData();
+        initReceiver();
     }
 
     private void initData() {
@@ -46,51 +51,6 @@ public class PartInfoActivity extends BaseActivity {
 
     private void setView() {
         List<String> keyList = SaveUtils.getAllKeys();
-//        for (int i = 0; i < keyList.size(); i++) {
-//            if (keyList.get(i).equals(sendOrder + "液位控制开关状态监测-低液位")) {
-//                setViewData(part_info_name1, keyList.get(i));
-//            }
-//            if (keyList.get(i).equals(sendOrder + "液位控制开关状态监测-高液位")) {
-//                setViewData(part_info_name2, keyList.get(i));
-//            }
-//            if (keyList.get(i).equals(sendOrder + "液位控制开关状态监测-超高液位")) {
-//                setViewData(part_info_name3, keyList.get(i));
-//            }
-//            if (keyList.get(i).equals(sendOrder + "污泥泵浮球状态监测-低液位")) {
-//                setViewData(part_info_name4, keyList.get(i));
-//            }
-//            if (keyList.get(i).equals(sendOrder + "污泥泵浮球状态监测-高液位")) {
-//                setViewData(part_info_name5, keyList.get(i));
-//            }
-//            if (keyList.get(i).equals(sendOrder + "运行状态监测-地面溢水监测")) {
-//                setViewData(part_info_name6, keyList.get(i));
-//            }
-//            if (keyList.get(i).equals(sendOrder + "运行状态监测-设备手自动状态")) {
-//                setViewData(part_info_name7, keyList.get(i));
-//            }
-//            if (keyList.get(i).equals(sendOrder + "运行状态监测-刮板运行状态监测")) {
-//                setViewData(part_info_name8, keyList.get(i));
-//            }
-//            if (keyList.get(i).equals(sendOrder + "运行状态监测-提升泵1运行状态监测")) {
-//                setViewData(part_info_name9, keyList.get(i));
-//            }
-//            if (keyList.get(i).equals(sendOrder + "运行状态监测-提升泵2运行状态监测")) {
-//                setViewData(part_info_name10, keyList.get(i));
-//            }
-//            if (keyList.get(i).equals(sendOrder + "运行状态监测-除渣状态")) {
-//                setViewData(part_info_name11, keyList.get(i));
-//            }
-//            if (keyList.get(i).equals(sendOrder + "运行状态监测-清洁状态")) {
-//                setViewData(part_info_name12, keyList.get(i));
-//            }
-//            if (keyList.get(i).equals(sendOrder + "运行状态监测-气浮状态")) {
-//                setViewData(part_info_name13, keyList.get(i));
-//            }
-//            if (keyList.get(i).equals(sendOrder + "运行状态监测-加热状态")) {
-//                setViewData(part_info_name14, keyList.get(i));
-//            }
-//        }
-
         if (keyList.contains(sendOrder + "液位控制开关状态监测-低液位")){
             setViewData(part_info_name1, sendOrder + "液位控制开关状态监测-低液位");
         }else {
@@ -222,9 +182,26 @@ public class PartInfoActivity extends BaseActivity {
 
     }
 
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        registerReceiver(myReceiver, intentFilter);
+    }
+
     @Override
-    public void notifyAllActivity(String str) {
-        super.notifyAllActivity(str);
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG,"PartInfoActivity--收到广播");
         setView();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myReceiver!=null) {
+            unregisterReceiver(myReceiver);
+        }
+
     }
 }

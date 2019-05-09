@@ -94,7 +94,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             MyApplication.loginEntity = loginEntity;
                             //设置缓存信息
                             setSP(loginEntity.getData());
-                            IninMQttDataActivity.start(LoginActivity.this);
+                            MainActivity.start(LoginActivity.this);
                             finish();
                         }
                     } else {
@@ -119,19 +119,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
 
     private void setSP(LoginEntity.DataBean data) {
-
-//        MyApplication.USER_ID = data.get_id();
-//        MyApplication.NICK_NAME = data.getNickName();
-//        MyApplication.USER_NAME = data.getUsername();
         SaveUtils.setString(KeyUtils.USER_ID,data.get_id());
         SaveUtils.setString(KeyUtils.NICK_NAME,data.getNickName());
         SaveUtils.setString(KeyUtils.USER_NAME,data.getUsername());
         if (data.getProjectName() != null && data.getProjectName().size() > 0) {
-            //默认选取第一个项目
-//            MyApplication.PROJECT_NAME = data.getProjectName().get(0).getProjectName();
-//            MyApplication.PROJECT_SEND = "/" + data.getProjectName().get(0).getProjectName() + "/";
-//            MyApplication.PROJECT_NUM = data.getProjectName().get(0).getProjectNum();
-
             SaveUtils.setString(KeyUtils.PROJECT_NAME,data.getProjectName().get(0).getProjectName());
             SaveUtils.setString(KeyUtils.PROJECT_SEND,"/" + data.getProjectName().get(0).getProjectName() + "/");
             SaveUtils.setString(KeyUtils.PROJECT_NUM,String.valueOf(data.getProjectName().get(0).getProjectNum()));
@@ -151,8 +142,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             MyApplication.projectList = projectList;
             MyApplication.MOUDLE=data.getProjectName().get(0).getModules();
         }
-//        MyApplication.PIC_URL = data.getImage();
-//        MyApplication.IP = data.getIp();
         SaveUtils.setString(KeyUtils.PROJECT_IP,data.getIp());
         SaveUtils.setString(KeyUtils.TEL, data.getUsername());
         SaveUtils.setString(KeyUtils.PWD, data.getPassword());

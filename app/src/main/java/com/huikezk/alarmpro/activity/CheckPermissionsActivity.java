@@ -37,15 +37,6 @@ public class CheckPermissionsActivity extends BaseActivity  {
      * 需要进行检测的权限数组
      */
     protected String[] needPermissions;
-//            = {
-////            Manifest.permission.ACCESS_COARSE_LOCATION,
-////            Manifest.permission.ACCESS_FINE_LOCATION,
-//            Manifest.permission.CAMERA,
-//            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//            Manifest.permission.READ_EXTERNAL_STORAGE,
-//            Manifest.permission.READ_PHONE_STATE,
-//            Manifest.permission.CALL_PHONE
-//    };
 
     private static final int PERMISSON_REQUESTCODE = 0X13;
 
@@ -118,25 +109,6 @@ public class CheckPermissionsActivity extends BaseActivity  {
      * @since 2.5.0
      */
     private List<String> findDeniedPermissions(String[] permissions) {
-//        Log.Loge(TAG, "进入-----findDeniedPermissions方法");
-//        List<String> needRequestPermissonList = new ArrayList<String>();
-//        if (Build.VERSION.SDK_INT >= 23
-//                && getApplicationInfo().targetSdkVersion >= 23) {
-//            try {
-//                for (String perm : permissions) {
-//                    Method checkSelfMethod = getClass().getMethod("checkSelfPermission", String.class);
-//                    Method shouldShowRequestPermissionRationaleMethod = getClass().getMethod("shouldShowRequestPermissionRationale",
-//                            String.class);
-//                    if ((Integer) checkSelfMethod.invoke(this, perm) != PackageManager.PERMISSION_GRANTED
-//                            || (Boolean) shouldShowRequestPermissionRationaleMethod.invoke(this, perm)) {
-//                        needRequestPermissonList.add(perm);
-//                    }
-//                }
-//            } catch (Throwable e) {
-//
-//            }
-//        }
-//        return needRequestPermissonList;
         List<String> needRequestPermissonList = new ArrayList<String>();
         //for (循环变量类型 循环变量名称 : 要被遍历的对象)
         for (String perm : permissions) {
@@ -224,14 +196,4 @@ public class CheckPermissionsActivity extends BaseActivity  {
         intent.setData(Uri.parse("package:" + getPackageName()));
         startActivity(intent);
     }
-
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            this.finish();
-//            return true;
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
-
 }

@@ -2,7 +2,6 @@ package com.huikezk.alarmpro.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,9 +11,7 @@ import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.ChangeProLvAdapter;
 import com.huikezk.alarmpro.entity.LoginEntity;
-import com.huikezk.alarmpro.service.ListenerManager;
 import com.huikezk.alarmpro.utils.KeyUtils;
-import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 
 import java.util.List;
@@ -47,22 +44,20 @@ public class ChangeProActivity extends BaseActivity {
         change_pro_lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                MyApplication.PROJECT_NAME = proList.get(position).getProjectName();
-//                MyApplication.PROJECT_SEND = "/" + proList.get(position).getProjectName() + "/";
-//                MyApplication.PROJECT_NUM = proList.get(position).getProjectNum();
                 MyApplication.MOUDLE = proList.get(position).getModules();
-//                MyUtils.Loge(TAG, "项目名：" + MyApplication.PROJECT_NAME + "--发送指令头："
-//                        + MyApplication.PROJECT_SEND + "--项目号：" + MyApplication.PROJECT_NUM +
-//                        "--模块：" + MyApplication.MOUDLE);
                 SaveUtils.setString(KeyUtils.PROJECT_NUM,String.valueOf(proList.get(position).getProjectNum()));
                 SaveUtils.setString(KeyUtils.PROJECT_NAME,proList.get(position).getProjectName());
                 SaveUtils.setString(KeyUtils.PROJECT_SEND,"/" + proList.get(position).getProjectName() + "/");
+                Intent intent1=new Intent();
+                intent1.setAction("myReceiver");
+                sendBroadcast(intent1);
 
-                ListenerManager.getInstance().sendBroadCast("项目名改变");
                 Intent intent = new Intent();
                 intent.putExtra("name", proList.get(position).getProjectName());
                 setResult(RESULT_OK, intent);
                 finish();
+
+
 
             }
         });

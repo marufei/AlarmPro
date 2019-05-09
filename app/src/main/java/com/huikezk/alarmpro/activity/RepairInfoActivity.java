@@ -2,6 +2,7 @@ package com.huikezk.alarmpro.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,7 @@ import com.huikezk.alarmpro.adapter.RepairInfoFinishGvAdapter;
 import com.huikezk.alarmpro.adapter.RepairInfoGvAdapter;
 import com.huikezk.alarmpro.entity.RepairHistoryEntity;
 import com.huikezk.alarmpro.entity.RepairInfoEntity;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
@@ -41,7 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RepairInfoActivity extends BaseActivity {
+public class RepairInfoActivity extends BaseActivity implements MyReceiver.OnMyReceiverListener {
 
     private TextView repair_info_name_start, repair_info_name_end, repair_info_time_start,
             repair_info_time_end, repair_info_content_start, repair_info_content_end;
@@ -49,6 +51,7 @@ public class RepairInfoActivity extends BaseActivity {
     private String TAG = "RepairInfoActivity";
     private RepairInfoGvAdapter adapter_start;
     private RepairInfoFinishGvAdapter adapter_finish;
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,7 @@ public class RepairInfoActivity extends BaseActivity {
         setTitle("报修详情");
         initView();
         initData();
+        initReceiver();
 
     }
 
@@ -73,7 +77,7 @@ public class RepairInfoActivity extends BaseActivity {
         repair_info_gv_end = findViewById(R.id.repair_info_gv_end);
         adapter_start = new RepairInfoGvAdapter(this);
         repair_info_gv_start.setAdapter(adapter_start);
-        adapter_finish=new RepairInfoFinishGvAdapter(this);
+        adapter_finish = new RepairInfoFinishGvAdapter(this);
         repair_info_gv_end.setAdapter(adapter_finish);
     }
 
@@ -156,7 +160,7 @@ public class RepairInfoActivity extends BaseActivity {
         if (data.getImgs() != null) {
             List<String> list = new Gson().fromJson(data.getImgs(), new TypeToken<List<String>>() {
             }.getType());
-            if (list!=null){
+            if (list != null) {
                 adapter_start.setListData(list);
                 adapter_start.notifyDataSetChanged();
             }
@@ -164,16 +168,32 @@ public class RepairInfoActivity extends BaseActivity {
         if (data.getFinishImgs() != null) {
             List<String> list = new Gson().fromJson(data.getFinishImgs(), new TypeToken<List<String>>() {
             }.getType());
-            if (list!=null){
+            if (list != null) {
                 adapter_finish.setListData(list);
                 adapter_finish.notifyDataSetChanged();
             }
         }
     }
 
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        registerReceiver(myReceiver, intentFilter);
+    }
+
     @Override
-    public void notifyAllActivity(String str) {
-        super.notifyAllActivity(str);
-//        initData();
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG, "RepairInfoActivity--收到广播");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myReceiver != null) {
+            unregisterReceiver(myReceiver);
+        }
+
     }
 }

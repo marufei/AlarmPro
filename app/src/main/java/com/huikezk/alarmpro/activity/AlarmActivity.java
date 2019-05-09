@@ -2,6 +2,7 @@ package com.huikezk.alarmpro.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import com.huikezk.alarmpro.MyApplication;
 import com.huikezk.alarmpro.R;
 import com.huikezk.alarmpro.adapter.AlarmHistoryLvAdapter;
 import com.huikezk.alarmpro.entity.AlarmHistoryEntity;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
@@ -31,12 +33,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AlarmActivity extends BaseActivity {
+public class AlarmActivity extends BaseActivity implements MyReceiver.OnMyReceiverListener{
 
     private ListView alarm_lv;
     private String TAG = "AlarmActivity";
     private AlarmHistoryLvAdapter adapter;
     private List<AlarmHistoryEntity.DataBean> listData = new ArrayList<>();
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class AlarmActivity extends BaseActivity {
         initView();
         initData();
         initListener();
+        initReceiver();
     }
 
     private void initListener() {
@@ -126,9 +130,27 @@ public class AlarmActivity extends BaseActivity {
         VolleyUtils.getInstance(AlarmActivity.this).addToRequestQueue(stringRequest);
     }
 
+
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        registerReceiver(myReceiver, intentFilter);
+    }
+
     @Override
-    public void notifyAllActivity(String str) {
-        super.notifyAllActivity(str);
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG,"AlarmActivity--收到广播");
         getAlarmHistory();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myReceiver!=null) {
+            unregisterReceiver(myReceiver);
+        }
+
     }
 }

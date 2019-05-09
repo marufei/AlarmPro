@@ -3,6 +3,8 @@ package com.huikezk.alarmpro.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -30,7 +32,7 @@ import com.huikezk.alarmpro.fragment.HomeFragment;
 import com.huikezk.alarmpro.fragment.MineFragment;
 import com.huikezk.alarmpro.fragment.NewsFragment;
 import com.huikezk.alarmpro.fragment.RepairFragment;
-import com.huikezk.alarmpro.service.ListenerManager;
+import com.huikezk.alarmpro.receiver.MyReceiver;
 import com.huikezk.alarmpro.utils.ActivityUtil;
 import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyUtils;
@@ -38,6 +40,8 @@ import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.UpdateManger;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 import com.huikezk.alarmpro.views.MyViewPager;
+
+import net.igenius.mqttservice.MQTTServiceCommand;
 
 import org.json.JSONObject;
 
@@ -47,7 +51,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends CheckPermissionsActivity implements MyApplication.PushSuccessListener,
-        RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener {
+        RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener,MyReceiver.OnMyReceiverListener {
 
     private MyViewPager vp_show;
     private RadioButton rb0, rb1, rb2, rb3;
@@ -75,6 +79,7 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
      * 推送过来的项目名
      */
     private String projectName;
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +88,11 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
         MyApplication.getInstance().setPushSuccessListener(this);
         initView();
         initEvent();
-        String token=PushServiceFactory.getCloudPushService().getDeviceId();
-        updateUmengToken(token);
+        initReceiver();
         initData();
+        String token = PushServiceFactory.getCloudPushService().getDeviceId();
+        updateUmengToken(token);
+        initMQTT();
         setPermission(permissions);
         getUpdateInfo();
     }
@@ -207,7 +214,9 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
 //        MyUtils.Loge(TAG, "项目名：" + MyApplication.PROJECT_NAME + "--发送指令头："
 //                + MyApplication.PROJECT_SEND + "--项目号：" + MyApplication.PROJECT_NUM +
 //                "--模块：" + MyApplication.MOUDLE);
-        ListenerManager.getInstance().sendBroadCast("项目名改变");
+        Intent intent=new Intent();
+        intent.setAction("myReceiver");
+        sendBroadcast(intent);
 
     }
 
@@ -260,12 +269,13 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
     }
 
     private void updateUmengToken(final String token) {
-        if (TextUtils.isEmpty(token)){
+        if (TextUtils.isEmpty(token)) {
             return;
         }
         String url = HttpsConts.BASE_URL + HttpsConts.UMENG_TOKEN;
         MyUtils.Loge(TAG, "url::" + url);
         MyUtils.Loge(TAG, "USER_ID:" + SaveUtils.getString(KeyUtils.USER_ID));
+        MyUtils.Loge(TAG, "token:" + token);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -318,11 +328,6 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
 //        }
 //    }
 
-    @Override
-    public void notifyAllActivity(String str) {
-        super.notifyAllActivity(str);
-        initData();
-    }
 
     //把返回键改成home键
     @Override
@@ -337,13 +342,6 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
             return super.dispatchKeyEvent(event);
         }
     }
-
-//    @Override
-//    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-//
-//    }
-
-
 
     public void getUpdateInfo() {
         String url = HttpsConts.BASE_URL + HttpsConts.UPDATE;
@@ -390,13 +388,42 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-    }
-
-    @Override
     public void onSuccess(String string) {
         updateUmengToken(string);
     }
+
+    private void initMQTT() {
+        if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.MQTT_URL))) {
+            MyUtils.Loge(TAG, "clientId：" + Build.SERIAL);
+            MQTTServiceCommand.connect(getApplicationContext(),
+                    "tcp://" + SaveUtils.getString(KeyUtils.MQTT_URL),
+                    Build.SERIAL,
+                    "admin",
+                    "123456");
+        }
+    }
+
+    private void initReceiver() {
+        myReceiver = new MyReceiver();
+        myReceiver.setOnMyReceive(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("myReceiver");
+        registerReceiver(myReceiver, intentFilter);
+    }
+
+    @Override
+    public void onMyReceiver(Context context, Intent intent) {
+        MyUtils.Loge(TAG,"MAinActivity--收到广播");
+        initData();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myReceiver!=null) {
+            unregisterReceiver(myReceiver);
+        }
+
+    }
+
 }
