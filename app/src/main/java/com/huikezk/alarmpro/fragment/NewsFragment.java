@@ -71,13 +71,12 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener, 
     private AlarmLvAdapter adapter;
 
     private TextView news_null;
-    private List<String> list;
+    private List<String> list=new ArrayList<>();
     private AlarmEntity alarmEntity;
     private MyReceiver myReceiver;
 
     @Override
     protected void lazyLoad() {
-        list = SaveUtils.getAllEndWithKey("alarm");
         if (news_null != null) {
             initData();
             initReceiver();
@@ -155,6 +154,8 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     private void initData() {
+        list.clear();
+        list = SaveUtils.getAllEndWithKey("alarm");
         if (list != null && list.size() > 0) {
             List<String> proList = new ArrayList<>();
             for (String str : list) {
@@ -320,7 +321,7 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener, 
 
     @Override
     public void onMyReceiver(Context context, Intent intent) {
-        MyUtils.Loge(TAG, "HomeFragment--收到广播");
+        MyUtils.Loge(TAG, "NewsFragment--收到广播");
         initData();
     }
 

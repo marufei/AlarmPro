@@ -171,7 +171,7 @@ public class PartInfoActivity extends BaseActivity implements MyReceiver.OnMyRec
             } else if (SaveUtils.getString(content).equals(ALARM)) {
                 view.setTextColor(getResources().getColor(R.color.red_f6));
             } else {
-                view.setTextColor(getResources().getColor(R.color.red_f6));
+                view.setTextColor(getResources().getColor(R.color.gray_9b));
             }
             view.setText(SaveUtils.getString(content));
 

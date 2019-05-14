@@ -199,7 +199,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     if (status.equals("1")) {
                         MyUtils.Loge("lbw", "===mqtt onDestroy");
                         MQTTServiceCommand.disconnect(getActivity().getApplicationContext());
-//                        getActivity().stopService(new Intent(getActivity().getApplicationContext(), MyMqttService.class));
                         SaveUtils.removeAllData();
                         MyApplication.finishAllActivity();
                         ActivityUtil.exitAll();

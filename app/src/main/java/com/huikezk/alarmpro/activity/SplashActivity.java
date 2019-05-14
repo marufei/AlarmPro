@@ -2,18 +2,12 @@ package com.huikezk.alarmpro.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.view.View;
 import android.view.WindowManager;
 
-import com.alibaba.sdk.android.push.AndroidPopupActivity;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
@@ -28,12 +22,9 @@ import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 
-import net.igenius.mqttservice.MQTTService;
-import net.igenius.mqttservice.MQTTServiceCommand;
-
 import org.json.JSONObject;
 
-import java.util.Map;
+import java.util.List;
 
 public class SplashActivity extends BaseActivity {
 
@@ -77,10 +68,17 @@ public class SplashActivity extends BaseActivity {
 
     }
 
+    public static void start(Context context) {
+        Intent intent = new Intent();
+        intent.setClass(context, SplashActivity.class);
+        context.startActivity(intent);
+    }
+
     private void initData() {
 //        MyApplication.flag = 0;
         if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.TEL)) &&
                 !TextUtils.isEmpty(SaveUtils.getString(KeyUtils.PWD))) {
+
             login();
         } else {
             // 停留3秒后发送消息，跳转到登录界面
@@ -140,9 +138,9 @@ public class SplashActivity extends BaseActivity {
         SaveUtils.setString(KeyUtils.NICK_NAME, data.getNickName());
         SaveUtils.setString(KeyUtils.USER_NAME, data.getUsername());
         if (data.getProjectName() != null && data.getProjectName().size() > 0) {
-            SaveUtils.setString(KeyUtils.PROJECT_NAME,data.getProjectName().get(0).getProjectName());
-            SaveUtils.setString(KeyUtils.PROJECT_SEND,"/" + data.getProjectName().get(0).getProjectName() + "/");
-            SaveUtils.setString(KeyUtils.PROJECT_NUM,String.valueOf(data.getProjectName().get(0).getProjectNum()));
+            SaveUtils.setString(KeyUtils.PROJECT_NAME, data.getProjectName().get(0).getProjectName());
+            SaveUtils.setString(KeyUtils.PROJECT_SEND, "/" + data.getProjectName().get(0).getProjectName() + "/");
+            SaveUtils.setString(KeyUtils.PROJECT_NUM, String.valueOf(data.getProjectName().get(0).getProjectNum()));
             projectList = new String[data.getProjectName().size()];
             String topics = "";
             for (int i = 0; i < data.getProjectName().size(); i++) {
@@ -158,8 +156,19 @@ public class SplashActivity extends BaseActivity {
             SaveUtils.setString(KeyUtils.MQTT_URL, data.getMqttUrl());
             MyApplication.projectList = projectList;
             MyApplication.MOUDLE = data.getProjectName().get(0).getModules();
+            List<String> keyList = SaveUtils.getAllKeys();
+            if (MyApplication.projectList != null) {
+                MyUtils.Loge(TAG, "MyApplication.projectList：" + MyApplication.projectList.length);
+                for (int i = 0; i < MyApplication.projectList.length; i++) {
+                    for (int j = 0; j < keyList.size(); j++) {
+                        if (keyList.get(j).contains(data.getProjectName().get(i).getProjectName())) {
+                            SaveUtils.removeData(keyList.get(j));
+                        }
+                    }
+                }
+            }
         }
-        SaveUtils.setString(KeyUtils.PROJECT_IP,data.getIp());
+        SaveUtils.setString(KeyUtils.PROJECT_IP, data.getIp());
         SaveUtils.setString(KeyUtils.TEL, data.getUsername());
         SaveUtils.setString(KeyUtils.PWD, data.getPassword());
         SaveUtils.setString(KeyUtils.PIC_URL, data.getImage());

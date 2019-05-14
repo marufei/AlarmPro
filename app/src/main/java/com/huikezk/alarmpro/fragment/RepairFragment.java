@@ -48,8 +48,6 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     protected void lazyLoad() {
-        list.clear();
-        list.addAll(SaveUtils.getAllEndWithKey("repair"));
         if (fragment_repair_null!=null) {
             initData();
             initReceiver();
@@ -84,7 +82,8 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
     }
 
     private void initData() {
-
+        list.clear();
+        list.addAll(SaveUtils.getAllEndWithKey("repair"));
         if (list != null && list.size() > 0) {
             List<String> proList = new ArrayList<>();
             for (String str : list) {

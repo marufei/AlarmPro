@@ -24,7 +24,9 @@ import com.huikezk.alarmpro.activity.ChangeProActivity;
 import com.huikezk.alarmpro.activity.ConditionActivity;
 import com.huikezk.alarmpro.activity.FanActivity;
 import com.huikezk.alarmpro.activity.LightActivity;
+import com.huikezk.alarmpro.activity.LoginActivity;
 import com.huikezk.alarmpro.activity.PartActivity;
+import com.huikezk.alarmpro.activity.SplashActivity;
 import com.huikezk.alarmpro.activity.TableActivity;
 import com.huikezk.alarmpro.activity.TimeManagerActivity;
 import com.huikezk.alarmpro.entity.BannerEntity;
@@ -38,6 +40,8 @@ import com.huikezk.alarmpro.utils.SaveUtils;
 import com.huikezk.alarmpro.utils.UpdateManger;
 import com.huikezk.alarmpro.utils.VolleyUtils;
 import com.youth.banner.Banner;
+
+import net.igenius.mqttservice.MQTTServiceCommand;
 
 import org.json.JSONObject;
 
@@ -91,10 +95,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     private void initData() {
 
         home_pro_name.setText(SaveUtils.getString(KeyUtils.PROJECT_NAME));
-        if (MyApplication.projectList != null && MyApplication.projectList.length > 1) {
-            home_pro_change.setVisibility(View.VISIBLE);
+        if (MyApplication.projectList != null) {
+            if (MyApplication.projectList.length > 1) {
+                home_pro_change.setVisibility(View.VISIBLE);
+            } else {
+                home_pro_change.setVisibility(View.GONE);
+            }
         } else {
-            home_pro_change.setVisibility(View.GONE);
+            MQTTServiceCommand.disconnect(getActivity().getApplicationContext());
+            MyApplication.finishAllActivity();
+            ActivityUtil.exitAll();
+            SplashActivity.start(getActivity());
         }
 
 

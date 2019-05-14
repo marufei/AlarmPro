@@ -214,6 +214,24 @@ public class SaveUtils {
      * 获取所有以keyWord结尾的集合
      * @return
      */
+    public static List<String> getAllStartWithKey(String keyWord) {
+        List<String> list = new ArrayList<>();
+        Map<String, String> map = (Map<String, String>) settings.getAll();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+//            Log.i("获取的key：" + entry.getKey(), "获取的value:" + settings.getString(entry.getKey(), ""));
+            if (entry.getKey().startsWith(keyWord)) {
+                list.add(entry.getKey());
+            }
+        }
+        return list;
+    }
+
+
+
+    /**
+     * 获取所有以keyWord结尾的集合
+     * @return
+     */
     public static List<String> getAllValueEndWithKey(String keyWord) {
         List<String> list = new ArrayList<>();
         Map<String, String> map = (Map<String, String>) settings.getAll();
