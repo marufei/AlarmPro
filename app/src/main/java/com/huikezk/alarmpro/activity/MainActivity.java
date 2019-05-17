@@ -218,18 +218,25 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
      * @param projectName
      */
     private void resetProject(String projectName) {
-        List<LoginEntity.DataBean.ProjectNameBean> proList = MyApplication.loginEntity.getData().getProjectName();
-        SaveUtils.setString(KeyUtils.PROJECT_NAME, projectName);
-        for (int i = 0; i < proList.size(); i++) {
-            if (proList.get(i).getProjectName().equals(projectName)) {
-                SaveUtils.setString(KeyUtils.PROJECT_NUM, String.valueOf(proList.get(i).getProjectNum()));
-                MyApplication.MOUDLE = proList.get(i).getModules();
+        if (MyApplication.loginEntity!=null) {
+            List<LoginEntity.DataBean.ProjectNameBean> proList = MyApplication.loginEntity.getData().getProjectName();
+            SaveUtils.setString(KeyUtils.PROJECT_NAME, projectName);
+            for (int i = 0; i < proList.size(); i++) {
+                if (proList.get(i).getProjectName().equals(projectName)) {
+                    SaveUtils.setString(KeyUtils.PROJECT_NUM, String.valueOf(proList.get(i).getProjectNum()));
+                    MyApplication.MOUDLE = proList.get(i).getModules();
+                }
             }
+            SaveUtils.setString(KeyUtils.PROJECT_SEND, "/" + projectName + "/");
+            Intent intent = new Intent();
+            intent.setAction("myReceiver");
+            sendBroadcast(intent);
+        }else {
+            MQTTServiceCommand.disconnect(getApplicationContext());
+            MyApplication.finishAllActivity();
+            ActivityUtil.exitAll();
+            SplashActivity.start(MainActivity.this);
         }
-        SaveUtils.setString(KeyUtils.PROJECT_SEND, "/" + projectName + "/");
-        Intent intent = new Intent();
-        intent.setAction("myReceiver");
-        sendBroadcast(intent);
 
     }
 

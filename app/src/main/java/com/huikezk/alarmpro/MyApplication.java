@@ -21,6 +21,7 @@ import com.huikezk.alarmpro.utils.KeyUtils;
 import com.huikezk.alarmpro.utils.MyActivityManager;
 import com.huikezk.alarmpro.utils.MyUtils;
 import com.huikezk.alarmpro.utils.SaveUtils;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import net.igenius.mqttservice.MQTTService;
 import net.igenius.mqttservice.MQTTServiceCommand;
@@ -42,12 +43,12 @@ public class MyApplication extends Application {
     /**
      * 更新地址
      */
-    public static String update_url="";
+    public static String update_url = "";
 
     /**
      * 更新内容
      */
-    public static String update_content="";
+    public static String update_content = "";
 
     private String TAG = "MyApplication";
 
@@ -162,7 +163,7 @@ public class MyApplication extends Application {
 
         @Override
         public void onConnectionStatus(Context context, boolean connected) {
-            myConnected=connected;
+            myConnected = connected;
         }
     };
 
@@ -176,8 +177,10 @@ public class MyApplication extends Application {
         NotificationChannel();
         initCloudChannel(this);
         receiver.register(getApplicationContext());
-        intent=new Intent();
+        intent = new Intent();
         intent.setAction("myReceiver");
+        // 初始化bugly
+        CrashReport.initCrashReport(getApplicationContext(), "4e3b043f41", true);
 
     }
 

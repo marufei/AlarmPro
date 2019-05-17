@@ -74,6 +74,7 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener, 
     private List<String> list=new ArrayList<>();
     private AlarmEntity alarmEntity;
     private MyReceiver myReceiver;
+    private List<String> proList=new ArrayList<>();
 
     @Override
     protected void lazyLoad() {
@@ -99,7 +100,7 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener, 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    String jsonStr = SaveUtils.getString(list.get(position));
+                    String jsonStr = SaveUtils.getString(proList.get(position));
                     Gson gson = new Gson();
                     alarmEntity = gson.fromJson(jsonStr, AlarmEntity.class);
                     if (alarmEntity != null && !TextUtils.isEmpty(alarmEntity.getDeviceName())) {
@@ -155,9 +156,10 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener, 
 
     private void initData() {
         list.clear();
+        proList.clear();
         list = SaveUtils.getAllEndWithKey("alarm");
         if (list != null && list.size() > 0) {
-            List<String> proList = new ArrayList<>();
+            proList = new ArrayList<>();
             for (String str : list) {
                 if (str.contains(SaveUtils.getString(KeyUtils.PROJECT_NAME))) {
                     proList.add(str);
