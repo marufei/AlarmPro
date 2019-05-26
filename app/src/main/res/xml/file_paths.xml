@@ -5,4 +5,8 @@
     <external-path
         name="images"
         path="Pictures" />
+
+    <root-path
+        name="root_path"
+        path="." />
 </paths>

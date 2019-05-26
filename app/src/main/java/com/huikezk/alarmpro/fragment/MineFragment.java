@@ -97,6 +97,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         }
     };
     private int MSG_DOWN_SUCCESS = 1;
+    private TextView mine_version;
 
     @Override
     protected void lazyLoad() {
@@ -119,6 +120,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initData() {
+        if (!TextUtils.isEmpty(MyUtils.getVersionName(getActivity()))) {
+            mine_version.setText("版本号：v"+MyUtils.getVersionName(getActivity()));
+        }
         if (!TextUtils.isEmpty(SaveUtils.getString(KeyUtils.NICK_NAME))) {
             mine_name.setText(SaveUtils.getString(KeyUtils.NICK_NAME));
         }
@@ -150,6 +154,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         mine_repair.setOnClickListener(this);
         mine_login_out = view.findViewById(R.id.mine_login_out);
         mine_login_out.setOnClickListener(this);
+        mine_version=view.findViewById(R.id.mine_version);
     }
 
 

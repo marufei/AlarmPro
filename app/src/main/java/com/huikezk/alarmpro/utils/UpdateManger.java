@@ -225,7 +225,7 @@ public class UpdateManger {
             MyUtils.Loge(TAG, "进入下载--");
             if (apkfile!=null) {
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                Uri contentUri = FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".fileProvider", apkfile);
+                Uri contentUri = FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".fileprovider", apkfile);
                 intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
             }
         } else {
