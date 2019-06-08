@@ -69,7 +69,7 @@ public abstract class BaseFragment extends Fragment {
      */
     protected void onInvisible() {
 
-
+        unLazyLoad();
     }
 
     /**
@@ -77,6 +77,8 @@ public abstract class BaseFragment extends Fragment {
      * 子类必须重写此方法
      */
     protected abstract void lazyLoad();
+
+    protected abstract void unLazyLoad();
 
 
     @Override
@@ -90,16 +92,4 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
-
-//    protected void revicedCast() {
-//
-//    }
-//
-//    class ResultDataReceive extends BroadcastReceiver {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//
-//            revicedCast();
-//        }
-//    }
 }

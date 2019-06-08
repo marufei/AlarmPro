@@ -104,6 +104,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
     }
 
+    @Override
+    protected void unLazyLoad() {
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

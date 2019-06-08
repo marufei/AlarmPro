@@ -132,6 +132,7 @@ public class MyApplication extends Application {
             MyUtils.Loge("lbw", "===onMessageArrived:" + topic + " " + new String(payload));
             SaveUtils.setString(topic, new String(payload));
             SaveUtils.removeManyData();
+            MyUtils.Loge(TAG,"intent:"+intent);
             sendBroadcast(intent);
         }
 
@@ -173,7 +174,7 @@ public class MyApplication extends Application {
         super.onCreate();
         mInstance = this;
         MQTTService.NAMESPACE = "com.huikezk.alarmpro";
-        registerActivityCallbacks();
+//        registerActivityCallbacks();
         NotificationChannel();
         initCloudChannel(this);
         receiver.register(getApplicationContext());

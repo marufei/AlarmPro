@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.huikezk.alarmpro.R;
+import com.huikezk.alarmpro.activity.MainActivity;
 import com.huikezk.alarmpro.activity.NewRepairActivity;
 import com.huikezk.alarmpro.activity.RepairFinishActivity;
 import com.huikezk.alarmpro.adapter.RepairLvAdapter;
@@ -45,14 +46,41 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
     private List<RepairEntity> listData;
     private TextView fragment_repair_null;
     private MyReceiver myReceiver;
+    private boolean isReceiverRegister;
 
     @Override
     protected void lazyLoad() {
+        MyUtils.Loge(TAG,"RepairFragment--lazyLoad");
         if (fragment_repair_null!=null) {
             initData();
-            initReceiver();
+            if (myReceiver==null) {
+                initReceiver();
+            }
         }
+//        if (getActivity()!=null&&((MainActivity)getActivity()).getAdapter()!=null) {
+//            if (((MainActivity)getActivity()).getAdapter().getItem(1)!=null
+//                    &&((NewsFragment)((MainActivity) getActivity()).getAdapter().getItem(1)).getMyReceiver()!=null){
+//                getActivity().unregisterReceiver(((NewsFragment)((MainActivity) getActivity()).getAdapter().getItem(1)).getMyReceiver() );
+//            }
+//            if (((MainActivity)getActivity()).getAdapter().getItem(0)!=null
+//                    &&((HomeFragment)((MainActivity) getActivity()).getAdapter().getItem(0)).getMyReceiver()!=null){
+//                getActivity().unregisterReceiver(((HomeFragment)((MainActivity) getActivity()).getAdapter().getItem(0)).getMyReceiver() );
+//            }
+//
+//        }
+
     }
+
+    @Override
+    protected void unLazyLoad() {
+        MyUtils.Loge(TAG,"RepairFragment---unLazyLoad");
+        try {
+            if (myReceiver != null && isReceiverRegister == true) {
+                getActivity().unregisterReceiver(myReceiver);
+            }
+        }catch (Exception e){}
+    }
+
 
     @Nullable
     @Override
@@ -63,6 +91,10 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
         initData();
         initListener();
         return view;
+    }
+
+    public MyReceiver getMyReceiver() {
+        return myReceiver;
     }
 
     private void initListener() {
@@ -129,6 +161,7 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
     }
 
     private void initReceiver() {
+        isReceiverRegister=true;
         myReceiver = new MyReceiver();
         myReceiver.setOnMyReceive(this);
         IntentFilter intentFilter = new IntentFilter();
@@ -147,6 +180,7 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onDestroy() {
         super.onDestroy();
+        MyUtils.Loge(TAG,"RepairFragment---onDestroy");
         if (myReceiver != null) {
             getActivity().unregisterReceiver(myReceiver);
         }

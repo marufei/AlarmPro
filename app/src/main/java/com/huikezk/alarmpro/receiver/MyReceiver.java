@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.huikezk.alarmpro.utils.MyUtils;
+
 /**
  * Created by MaRufei
  * on 2019/5/9.
@@ -14,6 +16,7 @@ import android.content.Intent;
  */
 public class MyReceiver extends BroadcastReceiver{
     private OnMyReceiverListener onMyReceive;
+    private String TAG="MyReceiver";
 
     public void setOnMyReceive(OnMyReceiverListener onMyReceive) {
         this.onMyReceive = onMyReceive;
@@ -21,6 +24,7 @@ public class MyReceiver extends BroadcastReceiver{
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        MyUtils.Loge(TAG,"MyReceiver---onReceive:"+intent.getAction());
         if (intent.getAction().equals("myReceiver")) {
             onMyReceive.onMyReceiver(context, intent);
         }

@@ -81,6 +81,7 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
      */
     private String projectName;
     private MyReceiver myReceiver;
+    private MainVpAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +98,10 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
         initSMSBind();
         setPermission(permissions);
         getUpdateInfo();
+    }
+
+    public MainVpAdapter getAdapter() {
+        return adapter;
     }
 
     private void initSMSBind() {
@@ -206,9 +211,10 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
         listFragnet.add(fragment4);
 
         rg_bottom.setOnCheckedChangeListener(this);
-        vp_show.setAdapter(new MainVpAdapter(getSupportFragmentManager()));
+        adapter=new MainVpAdapter(getSupportFragmentManager());
+        vp_show.setAdapter(adapter);
         vp_show.setCurrentItem(currentPage);
-        vp_show.setOffscreenPageLimit(3);
+        vp_show.setOffscreenPageLimit(4);
         vp_show.addOnPageChangeListener(this);
     }
 
@@ -424,6 +430,7 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
     }
 
     private void initReceiver() {
+        MyUtils.Loge(TAG,"MainActivity---initReceiver");
         myReceiver = new MyReceiver();
         myReceiver.setOnMyReceive(this);
         IntentFilter intentFilter = new IntentFilter();

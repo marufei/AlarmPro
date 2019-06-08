@@ -25,6 +25,7 @@ import com.huikezk.alarmpro.activity.ConditionActivity;
 import com.huikezk.alarmpro.activity.FanActivity;
 import com.huikezk.alarmpro.activity.LightActivity;
 import com.huikezk.alarmpro.activity.LoginActivity;
+import com.huikezk.alarmpro.activity.MainActivity;
 import com.huikezk.alarmpro.activity.PartActivity;
 import com.huikezk.alarmpro.activity.SplashActivity;
 import com.huikezk.alarmpro.activity.TableActivity;
@@ -65,10 +66,23 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     private static final int PRO_CHANGE = 0x004;
     private Banner banner;
     private MyReceiver myReceiver;
+    private boolean isReceiverRegister;
 
     @Override
     protected void lazyLoad() {
+        MyUtils.Loge(TAG,"HomeFragment--lazyLoad");
     }
+
+    @Override
+    protected void unLazyLoad() {
+        MyUtils.Loge(TAG,"HomeFragment---unLazyLoad");
+        try {
+            if (myReceiver != null && isReceiverRegister == true) {
+                getActivity().unregisterReceiver(myReceiver);
+            }
+        }catch (Exception e){}
+    }
+
 
     @Nullable
     @Override
@@ -80,6 +94,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         initListener();
         initReceiver();
         return view;
+    }
+
+    public MyReceiver getMyReceiver() {
+        return myReceiver;
     }
 
     private void initListener() {
@@ -283,6 +301,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     private void initReceiver() {
+        isReceiverRegister=true;
         myReceiver = new MyReceiver();
         myReceiver.setOnMyReceive(this);
         IntentFilter intentFilter = new IntentFilter();
@@ -295,9 +314,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         MyUtils.Loge(TAG, "HomeFragment--收到广播");
     }
 
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+        MyUtils.Loge(TAG,"HomeFragment---onDestroy");
         if (myReceiver != null) {
             getActivity().unregisterReceiver(myReceiver);
         }

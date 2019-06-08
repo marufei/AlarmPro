@@ -30,6 +30,7 @@ import com.huikezk.alarmpro.activity.FanActivity;
 import com.huikezk.alarmpro.activity.FanInfoActivity;
 import com.huikezk.alarmpro.activity.LightActivity;
 import com.huikezk.alarmpro.activity.LightInfoActivity;
+import com.huikezk.alarmpro.activity.MainActivity;
 import com.huikezk.alarmpro.activity.PartActivity;
 import com.huikezk.alarmpro.activity.PartInfoActivity;
 import com.huikezk.alarmpro.activity.TableActivity;
@@ -75,14 +76,40 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener, 
     private AlarmEntity alarmEntity;
     private MyReceiver myReceiver;
     private List<String> proList=new ArrayList<>();
+    private boolean isReceiverRegister;
 
     @Override
     protected void lazyLoad() {
+        MyUtils.Loge(TAG,"NewsFragment--lazyLoad");
         if (news_null != null) {
             initData();
-            initReceiver();
+            if (myReceiver==null) {
+                initReceiver();
+            }
         }
+//        if (getActivity()!=null&&((MainActivity)getActivity()).getAdapter()!=null) {
+//            if (((MainActivity)getActivity()).getAdapter().getItem(0)!=null
+//                    &&((HomeFragment)((MainActivity) getActivity()).getAdapter().getItem(0)).getMyReceiver()!=null){
+//                getActivity().unregisterReceiver(((HomeFragment)((MainActivity) getActivity()).getAdapter().getItem(0)).getMyReceiver() );
+//            }
+//            if (((MainActivity)getActivity()).getAdapter().getItem(2)!=null
+//                    &&((RepairFragment)((MainActivity) getActivity()).getAdapter().getItem(2)).getMyReceiver()!=null){
+//                getActivity().unregisterReceiver(((RepairFragment)((MainActivity) getActivity()).getAdapter().getItem(2)).getMyReceiver() );
+//            }
+//
+//        }
     }
+
+    @Override
+    protected void unLazyLoad() {
+        MyUtils.Loge(TAG,"NewsFragment---unLazyLoad");
+        try {
+            if (myReceiver != null && isReceiverRegister == true) {
+                getActivity().unregisterReceiver(myReceiver);
+            }
+        }catch (Exception e){}
+    }
+
 
     @Nullable
     @Override
@@ -93,6 +120,10 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener, 
         initListener();
         initData();
         return view;
+    }
+
+    public MyReceiver getMyReceiver() {
+        return myReceiver;
     }
 
     private void initListener() {
@@ -314,6 +345,7 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     private void initReceiver() {
+        isReceiverRegister=true;
         myReceiver = new MyReceiver();
         myReceiver.setOnMyReceive(this);
         IntentFilter intentFilter = new IntentFilter();
@@ -330,6 +362,7 @@ public class NewsFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        MyUtils.Loge(TAG,"NewsFragment---onDestroy");
         if (myReceiver != null) {
             getActivity().unregisterReceiver(myReceiver);
         }
