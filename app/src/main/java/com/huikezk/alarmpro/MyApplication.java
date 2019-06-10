@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import com.alibaba.sdk.android.push.CloudPushService;
@@ -112,10 +113,6 @@ public class MyApplication extends Application {
         @Override
         public void onSubscriptionSuccessful(Context context,
                                              String requestId, String topic) {
-            // called when a message has been successfully published
-            MyUtils.Loge("lbw", "===onSubscriptionSuccessful");
-            MyUtils.Loge("lbw", "===requestId:" + requestId + "--topic:" + topic);
-
         }
 
         @Override
@@ -133,13 +130,15 @@ public class MyApplication extends Application {
             SaveUtils.setString(topic, new String(payload));
             SaveUtils.removeManyData();
             MyUtils.Loge(TAG,"intent:"+intent);
-            sendBroadcast(intent);
+            if (topic.contains(SaveUtils.getString(KeyUtils.PROJECT_NAME))) {
+                sendBroadcast(intent);
+            }
         }
 
         @Override
         public void onPublishSuccessful(Context context, String requestId, String topic) {
             // called when a subscription is successful
-            MyUtils.Loge("lbw", "===onPublishSuccessful");
+            MyUtils.Loge("lbw", "===onPublishSuccessful："+topic);
         }
 
 
@@ -178,8 +177,10 @@ public class MyApplication extends Application {
         NotificationChannel();
         initCloudChannel(this);
         receiver.register(getApplicationContext());
-        intent = new Intent();
-        intent.setAction("myReceiver");
+        if(isOnMainThread()) {
+            intent = new Intent();
+            intent.setAction("myReceiver");
+        }
         // 初始化bugly
         CrashReport.initCrashReport(getApplicationContext(), "4e3b043f41", true);
 
@@ -404,5 +405,13 @@ public class MyApplication extends Application {
 
     public Activity getCurrentActivity() {
         return currentActivity;
+    }
+
+    /**
+     * 判断是否在当前主线程
+     * @return
+     */
+    public static boolean isOnMainThread(){
+        return Looper.myLooper() == Looper.getMainLooper();
     }
 }

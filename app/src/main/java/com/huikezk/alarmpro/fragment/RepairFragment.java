@@ -77,6 +77,7 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
         try {
             if (myReceiver != null && isReceiverRegister == true) {
                 getActivity().unregisterReceiver(myReceiver);
+                myReceiver=null;
             }
         }catch (Exception e){}
     }
@@ -161,6 +162,7 @@ public class RepairFragment extends BaseFragment implements View.OnClickListener
     }
 
     private void initReceiver() {
+        MyUtils.Loge(TAG,"HomeFragment创建receiver");
         isReceiverRegister=true;
         myReceiver = new MyReceiver();
         myReceiver.setOnMyReceive(this);

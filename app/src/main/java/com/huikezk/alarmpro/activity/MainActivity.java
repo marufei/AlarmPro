@@ -431,6 +431,7 @@ public class MainActivity extends CheckPermissionsActivity implements MyApplicat
 
     private void initReceiver() {
         MyUtils.Loge(TAG,"MainActivity---initReceiver");
+        MyUtils.Loge(TAG,"MainActivity创建receiver");
         myReceiver = new MyReceiver();
         myReceiver.setOnMyReceive(this);
         IntentFilter intentFilter = new IntentFilter();

@@ -79,6 +79,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         try {
             if (myReceiver != null && isReceiverRegister == true) {
                 getActivity().unregisterReceiver(myReceiver);
+                myReceiver=null;
             }
         }catch (Exception e){}
     }
@@ -107,6 +108,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onResume() {
         super.onResume();
+
         initData();
     }
 
@@ -303,6 +305,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     private void initReceiver() {
         isReceiverRegister=true;
         myReceiver = new MyReceiver();
+        MyUtils.Loge(TAG,"HomeFragment创建receiver");
         myReceiver.setOnMyReceive(this);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("myReceiver");
