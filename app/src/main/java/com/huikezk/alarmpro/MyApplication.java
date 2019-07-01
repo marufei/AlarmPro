@@ -126,7 +126,7 @@ public class MyApplication extends Application {
 
         @Override
         public void onMessageArrived(Context context, String topic, byte[] payload) {
-            MyUtils.Loge("lbw", "===onMessageArrived:" + topic + " " + new String(payload));
+            MyUtils.Loge("lbw", "===onMessageArrived:" + topic + " --message:" + new String(payload));
             SaveUtils.setString(topic, new String(payload));
             SaveUtils.removeManyData();
             MyUtils.Loge(TAG,"intent:"+intent);
